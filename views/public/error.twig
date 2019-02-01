@@ -1,0 +1,75 @@
+{% extends '../one.twig' %}
+
+{% block bodyblock %}
+    <div class="column is-half-tablet">
+      <div class="content">
+        <h1 class="is-size-1">Нам очень жаль!</h1>
+        <p class="is-size-3">Такой страницы не существует</p>
+
+        <div class="message is-warning">
+          <div class="message-body">
+            <p>Status: <strong>{{ error.status }}</strong></p>
+            <p>{{ error.message }}</p>
+          </div>
+        </div>
+        {% if error.stack %}
+        <pre>{{ error.stack }}</pre>
+        {% endif %}
+
+        <h2>Возможные причины:</h2>
+        <ul>
+          <li>Вы вводили ссылку на страницу и сделали ошибку</li>
+          <li>Страница была перемещена на другой адрес или удалена</li>
+          <li>На сайте есть какая-то поломанная ссылка в меню</li>
+          <li>Произошёл технический сбой и вам отдало ошибочный адрес</li>
+        </ul>
+
+        <div class="message is-info">
+          <div class="message-header">
+            Решение:
+          </div>
+          <div class="message-body">
+            <p>Не стоит переживать! Просто
+              <a href="/" title="На главную">нажми сюда и перейди на главную</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="column is-half-tablet">
+        <div class="conent">
+          <div>
+            <figure class="image is-128x128">
+              <img src="/images/error.gif">
+            </figure>
+          </div>
+          <h2 class="is-size-4 has-text-warning">Мы можем исправить ошибку!<br /> Но расскажите, как нам её найти.</h2>
+          <form action="/daybook/report" method="POST" id="daybook">
+            <input name="_csrf" type="hidden" value="{{ csrf }}" />
+            <input name="url" type="hidden" value="({{ error.method }}) {{ error.url }}" />
+            {% if user %}
+              <input name="from" type="hidden" value="@{{ user.username }}" />
+            {% else %}
+              <div class="field">
+                <label class="label" for="from">Представьтесь, пожалуйста</label>
+                <div class="control">
+                  <input name="from" class="input{{ 'from' in errkeys ? ' is-danger' : ''}}" value="{{ old.from }}" type="text" autocomplete="off" autofocus>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label" for="address">Ваш контакт (если хотите, чтобы вам отписали)</label>
+                <div class="control">
+                  <input name="address" class="input" value="{{ old.address }}" type="text">
+                </div>
+              </div>
+            {% endif %}
+            <div class="field">
+              <label class="label" for="body">Расскажите, что произошло</label>
+              <div class="control">
+                <textarea name="body" class="textarea" placeholder="например, я нажал на такую-то кнопку и попал сюда..."></textarea>
+              </div>
+            </div>
+            <button type="submit" class="button is-fullwidth is-info" style="margin-top: 10px">Отправить</button>
+          </form>
+        </div>
+      </div>
+{% endblock %}

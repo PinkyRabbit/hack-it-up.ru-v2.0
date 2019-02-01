@@ -1,0 +1,101 @@
+{% from 'parts.twig' import navbar %}
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% if seo.description %}
+      <meta name="description" content="{{ seo.description }}">
+    {% endif %}  
+    {% if seo.keywords %}
+      <meta name="keywords" content="{{ seo.keywords }}">
+    {% endif %}  
+  
+    <title>{{ seo.title ? 'hack-it-up.ru — '+title : 'hack-it-up.ru *_*' }}</title>
+
+    <link rel="shortcut icon" href="/favicon.png">
+    <!-- stylesheet -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <h1>Hello, world!</h1>
+    <header>
+      <div class="row">
+        {{ navbar(menucats) }}
+      </row>
+    </header>
+    {% block body %}{% endblock %}
+    <!-- scripts -->
+    <script src="/js/jquery-1.12.4.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    {% if scripts.costume %}
+      <script src="{{ scripts.costume }}"></script>
+    {% endif %}
+    {% if scripts.google %}
+      <script src="{{ scripts.google }}"></script>
+    {% endif %}
+  </body>
+</html>
+
+
+  {# body
+    header.container
+      .row
+        include ./navbar.pug
+        include ./top-image.pug
+        if h1 || post
+          h1 #{ post ? post.h1 : h1 }
+        else
+          h1 Happy Hacking *_*
+    .container#main
+      .row
+        .col-xs-12.col-sm-9#content
+          include ./flash.pug
+          block content
+        aside.col-xs-12.col-sm-3
+          #sidebar
+            if cloudtags
+              .tagcloud
+                h3 Меню:
+                each tag,i in cloudtags
+                  a(href="/tag/#{tag.url}",title="Читать про #{tag.name}",data-toggle="tooltip",data-placement="left")
+                    span.label.label-default #{tag.name}
+            .clearfix
+            if datescat
+              .archive 
+                h3 Архив записей
+                each date,i in datescat
+                  ul
+                    li
+                      a(href="/date/#{date.url}",title="#{date.name}") #{date.name}
+            .socbtns
+              h3 Добавь, чтобы не потерять:
+              span.sharer.button(data-sharer="vk",data-caption="#{description ? description : title}",data-title="#{post ? post.title : title}",data-url="#{currentpage}")
+                img(src="/images/VK-icon.jpg",alt="Поделиться на Vk")
+              span.sharer.button(data-sharer="telegram",data-title="#{post ? post.title : title}",data-url="#{currentpage}")
+                img(src="/images/TG-icon.jpg",alt="Поделиться в Телеграме")
+              span.sharer.button(data-sharer="facebook",data-url="#{currentpage}")
+                img(src="/images/FB-icon.jpg",alt="Поделиться на Facebook")
+              span.sharer.button(data-sharer="twitter",data-title="#{post ? post.title : title}",data-hashtags="#{post ? post.keywords : title}",data-url="#{currentpage}")
+                img(src="/images/TW-icon.jpg",alt="Поделиться на Twitter")
+            .subscription
+              a.pull-right(href="#",title="Каждый месяц к вам на почту будет приходить письмо, содержащее список всех тем, опубликованных на сайте.",data-toggle="tooltip",data-placement="left")
+                span.glyphicon.glyphicon-info-sign(aria-hidden="true")
+              form(method="post",action="/subscribe")
+                .form-group
+                  label(for="email") Ваш email
+                  input.form-control(type="email",id="email",name="email",placeholder="mymail@mail.ru")
+                button.btn.btn-danger.btn-block(type="submit") Оформить подписку
+
+
+    include ./footer.pug #}
