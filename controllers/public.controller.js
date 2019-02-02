@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports.home = (req, res, next) => {
   res.locals.seo = {
     title: 'Домашняя страница блога вебразработчика',

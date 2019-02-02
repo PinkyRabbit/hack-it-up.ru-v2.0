@@ -1,0 +1,9 @@
+<!-- scripts -->
+<script src="/js/jquery-1.12.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<% if (typeof scripts.costume != 'undefined') { %>
+  <script src="{{ scripts.costume }}"></script>
+{% } %>
+<% if (typeof scripts.google != 'undefined') { %>
+  <script src="{{ scripts.google }}"></script>
+<% } %>

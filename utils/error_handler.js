@@ -4,6 +4,8 @@ const logger = require('./logger');
 
 module.exports = (err, req, res, next) => { // eslint-disable-line
   console.log(err);
+  res.locals.csrf = req.csrfToken();
+
   const errObj = {};
   errObj.status = err.status || err.errorCode || 502;
   errObj.message = err.message || '';

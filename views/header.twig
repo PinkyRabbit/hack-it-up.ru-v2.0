@@ -1,0 +1,11 @@
+{% macro header(seo) %}
+  <header>
+    <div>
+      {% if seo.image %}
+        <img src="/images/uploads/{{seo.image}}" alt="{{seo.title}}" class="logo">
+      {% else %}
+        <img src="/images/standart/no-image.jpg" alt="hack-it-up" class="logo">
+      {% endif %}
+    </div>
+  </header>
+{% endmacro %}

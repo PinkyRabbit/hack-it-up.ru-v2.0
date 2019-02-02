@@ -42,7 +42,7 @@
           <a href="/flash" title="FLASH">FLASH</a>
         </li>
         <li>
-          <a href="/contact" title="Контакты">Контакты</a>
+          <a href="/contact" title="Контакты">Контакты</a>() 
         </li>
       </ul>
       {# if authxyz
