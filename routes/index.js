@@ -6,12 +6,12 @@ const errorHandler = require('../utils/error_handler');
 // routes
 const pub   = require('./public');
 // const pages = require('./pages');
-// const admin = require('./admin');
+const admin = require('./admin');
 
 module.exports = (app) => {
   app.use('/', pub);
   // app.use('/pages', pages);
-  // app.use('/admin', admin);
+  app.use('/admin', admin);
 
 
   // protection

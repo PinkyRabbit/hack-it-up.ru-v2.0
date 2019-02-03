@@ -32,6 +32,9 @@ article .embed-responsive{
 #main{
   background: #ffffff;
 }
+.content {
+  padding: 20px;
+}
 #content{
   padding: 20px;
 }

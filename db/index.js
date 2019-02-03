@@ -1,0 +1,19 @@
+'use strict';
+
+/* eslint-disable prefer-template */
+require('dotenv').config();
+
+const monk = require('monk');
+
+// Connection URL
+const url = [
+  process.env.DB_USER
+    ? process.env.DB_USER + ':' + process.env.DB_PASSWORD + '@'
+    : '',
+  process.env.BASE_DOMAIN + ':27017',
+  '/' + process.env.DB,
+].join('');
+
+const db = monk(url);
+
+module.exports = db;

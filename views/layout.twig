@@ -1,5 +1,6 @@
-{% from 'parts.twig' import navbar %}
-{% from 'header.twig' import header %}
+{% from 'partials/navbar.twig' import navbar %}
+{% from 'partials/header.twig' import header %}
+{% from 'partials/footer.twig' import footer %}
 
 <!doctype html>
 <html lang="ru">
@@ -13,8 +14,8 @@
     {% if seo.keywords %}
       <meta name="keywords" content="{{ seo.keywords }}">
     {% endif %}  
-  
-    <title>{{ seo.title ? 'hack-it-up.ru — '+title : 'hack-it-up.ru *_*' }}</title>
+
+    <title>{{ seo.title ? 'hack-it-up.ru — ' ~ seo.title : 'hack-it-up.ru *_*' }}</title>
 
     <link rel="shortcut icon" href="/favicon.png">
     <!-- stylesheet -->
@@ -33,7 +34,27 @@
       {{ navbar(menucats) }}
       {% if seo %}{{ header(seo) }}{% endif %}
       {% block body %}{% endblock %}
+      <h1>{{ seo ? seo.h1 : 'Happy Hacking *_*' }}</h1>
+      <div class="content" id="main">
+        <div class="row">
+          {% if seo and seo.sidebar %}
+            <div class="col-xs-12 col-sm-9" id="content">
+              {% block bodyblock %}{% endblock %}
+            </div>
+            <aside class="col-xs-12 col-sm-3">
+              <div id="sidebar">
+                <h3>sidebar</h3>
+              </div>
+            </aside>
+          {% else %}
+            <div class="col-xs-12" id="content">
+              {% block bodyblock %}{% endblock %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
     </div>
+    {{ footer() }}
     <!-- scripts -->
     <script src="/js/jquery-1.12.js"></script>
     <script src="/js/bootstrap.min.js"></script>
