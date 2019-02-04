@@ -1,5 +1,6 @@
 'use strict';
 
+const moment = require('moment');
 const Posts = require('../db/posts');
 
 module.exports.home = (req, res, next) => {
@@ -13,9 +14,15 @@ module.exports.home = (req, res, next) => {
     description: 'Этот блог родился, когда я делал первые шаги в NodeJS. В нём я публикую свои мысли и заметки про программирование и лучше писать код.',
   };
 
-  Posts.getAll() // @NOTE: Заменить на только опубликованные и по номерам страниц
-    .then((docs) => {
-      console.log(docs);
-      res.render('public/home');
-    });
+  const page = req.query && req.query.page ? parseInt(req.query.page, 10) : 1;
+  Posts.getAllNews(page) // @NOTE: Заменить на только опубликованные и по номерам страниц
+    .then((p, pagination) => {
+      const posts = p.filtred.map(x => ({
+        ...x,
+        createdate: moment(x.createdAt).format('lll'),
+      }));
+
+      res.render('public/posts', { posts, pagination: p.pagination });
+    })
+    .catch(err => next(err));
 };

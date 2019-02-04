@@ -447,3 +447,10 @@ article .alert-info {
     border-top: 2px solid #9b4dca;
   }
 }
+.pagination>.active>a,
+.pagination>.active>a:focus, .pagination>.active>a:hover,
+.pagination>.active>span, .pagination>.active>span:focus,
+.pagination>.active>span:hover{
+  background-color: #ffecf5;
+  border-color: #efcced;
+}
