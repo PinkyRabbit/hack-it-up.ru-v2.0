@@ -16,9 +16,9 @@ module.exports.home = (req, res, next) => {
 
   const page = req.query && req.query.page ? parseInt(req.query.page, 10) : 1;
   if (page !== 1) {
-    res.locals.seo.title += ` - Страница ${page}`; 
-    res.locals.seo.h1 += ` - Страница ${page}`; 
-    res.locals.seo.description += `Страница ${page}. ${res.locals.seo.description}`; 
+    res.locals.seo.title += ` - Страница ${page}`;
+    res.locals.seo.h1 += ` - Страница ${page}`;
+    res.locals.seo.description += `Страница ${page}. ${res.locals.seo.description}`;
   }
 
   Posts.getAllNews(page)
