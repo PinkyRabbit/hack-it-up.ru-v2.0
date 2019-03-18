@@ -1,0 +1,120 @@
+
+
+  extends ../layout
+
+block content
+  if errors
+    ul.alert.alert-danger
+      each error,i in errors
+        li
+          span.glyphicon.glyphicon-fire(aria-hidden="true")
+          |  #{error.msg}
+  .hidden#savedtext #{ editdata ? editdata.body : '' }
+  form(method="post",action="/admin/editpost/#{editdata._id}",enctype="multipart/form-data")
+    input.form-control(type="hidden",id="id",name="id",value="#{editdata._id}")
+    .form-group.has-error
+      label.control-label(for="title") Заголовок. Не желательно менять! (до 60 символов)
+      input.form-control(type="text",placeholder="Заголовок в гугле",id="title",name="title",value="#{ editdata ? editdata.title : '' }")
+    .form-group.has-error
+      label.control-label(for="h1") Заголовок h1. Не желательно менять!
+      input.form-control(type="text",placeholder="Заголовок статьи",id="h1",name="h1",value="#{ editdata ? editdata.h1 : '' }")
+    .form-group.has-error
+      label.control-label(for="url") Ссылка на статью. Не желательно менять!
+      input.form-control(type="text",id="url",name="url",value="#{editdata.url}")
+    .form-group
+      label.control-label(for="description") Описание (Около 150 символов)
+      textarea.form-control(id="description",name="description") #{ editdata ? editdata.description : '' }
+    .form-group
+      label.control-label(for="keywords") Ключевые слова(2-5 слов через запятую)
+      input.form-control(type="text",placeholder="любые, ключи",id="keywords",name="keywords",value="#{ editdata ? editdata.keywords : '' }")
+    .form-group
+      input.form-control(type="hidden",id="author",name="author",value="PinkyaRabbit")
+    .form-group
+      if categories
+        label(for="category") Выберите категорию
+        select#category.form-control(name="category",value="#{ editdata ? editdata.category : '' }")
+          each category,i in categories
+            option(value="#{category._id}",selected="#{ editdata && editdata.category==category._id ? 'selected' : '' }") #{category.name}
+      else
+        .alert.alert-info
+          | Должна быть указана хотя бы одна категория! 
+          a(href="/admin/cat",title="Сооздать категорию", data-toggle="tooltip",data-placement="top") Нажать чтобы создать категорию.
+    .form-group.tagon
+      if tags
+        h4 Выберите теги:
+        each tag,i in tags
+          span.label.label-default.js-tagon(data-tagid='#{tag._id}', id="#{ editdata ? tag._id : '' }") #{tag.name}
+        input.form-control(type="hidden",id="tags",name="tags",value="#{ editdata ? editdata.tags : '' }")
+      else
+        .alert.alert-info
+          | Для статьи необходимо создать хотя бы один тег! 
+          a(href="/admin/tags",title="Сооздать новый тег", data-toggle="tooltip",data-placement="top") Нажать чтобы создать тег.
+    .form-group
+      label(for="body") Введите полный текст новости
+      textarea.form-control(id="body",name="body")
+    .form-group
+      if !editdata || editdata.postimage == 'no-image.jpg'
+        label(for="postimage") Изображение поста(800x350)
+        input.form-control(type="file",id="postimage",name="postimage")      
+      else
+        h2 Текущее изображение поста:
+        img.img-responsive.img-thumbnail(src="/uploads/#{editdata.postimage}", alt="#{editdata.title}")
+        input.form-control(type="hidden",id="postimage",name="postimage",value="#{editdata.postimage}")
+        a.btn.btn-default.btn-block#js-deleteimg(data-delete='#{editdata._id}',href="#",role="button")
+          span.glyphicon.glyphicon-fire
+          |  Изменить текущее изображение поста
+        hr
+      script(defer="defer").
+        $('#js-deleteimg').on('click',function(e){
+          e.preventDefault();
+          var deleteСonfirm = confirm("Вы действительно хотите удалить изображение? Это действие необратимо!");
+          var deleteId = $(this).data('delete');
+          alert(deleteId);
+          if(deleteСonfirm){ 
+            $.ajax({
+              url : '/admin/editpost/delpostimg/'+deleteId,
+              type : "DELETE",
+              success : function(result){
+                console.log(result);
+              }
+            });
+          }
+          var postId = $('#id').val();
+          window.location = '/admin/editpost/'+postId;        
+        });
+    button.btn.btn-danger(type="submit") #{editdata ? 'Обновить статью' : 'Создать статью'}
+  script(src='/ckeditor/ckeditor.js')
+  script.
+    CKEDITOR.replace( 'body', {
+        on: {
+            instanceReady: function( evt ) {
+              CKEDITOR.instances['body'].setData(document.getElementById('savedtext').innerText);
+            }
+        }
+    } );
+  script(defer="defer").
+    $(document).ready(function() {
+      var tagsString = $('#tags').val();
+      if(tagsString!=''){
+        var tagsArr = tagsString.split(",");
+        tagsArr.forEach(function(tag){
+          $("#"+tag).removeClass('label-default').addClass('label-success');
+        });
+      }
+    });
+  script.
+    $('.js-tagon').on('click',function(e){
+      var tagid = $(this).data('tagid');
+      if($(this).hasClass('label-default')){
+        $(this).removeClass('label-default').addClass('label-success');
+        if ($('#tags').val()=='') $('#tags').val(tagid);
+        else $('#tags').val($('#tags').val()+','+tagid);
+      } else {
+        var tagstr = $('#tags').val();
+        var re = new RegExp(',?' + tagid + ',?', '');
+        var retest = new RegExp(',' + tagid + ',', '');
+        if(tagstr.match(retest)) $('#tags').val(tagstr.replace(re,','));
+        else $('#tags').val(tagstr.replace(re,''));
+        $(this).removeClass('label-success').addClass('label-default');
+      }
+    });

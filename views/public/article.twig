@@ -1,0 +1,23 @@
+{% extends '../layout.twig' %}
+
+{% block bodyblock %}
+  <div class="meta-post">
+    <span class="catbadge">
+      <a href="/cat/{{ postcat.url }}" title="Смотреть категорию {{postcat.name}}">{{postcat.name}}</a>
+      <span></span>
+    </span>
+    <span class="pull-right">
+      {% for tag, i in posttags %}
+        <a href="/tag/{{tag.url}}" title="В раздел {{tag.name}}" data-toggle="tooltip" data-placement="bottom">
+          <span class="label label-warning"></span> {{tag.name}}
+        </a>
+      {% endfor %}
+      <a href="/admin/editpost/{{post._id}}" data-toggle="tooltip" data-placement="top" title="Править">
+        <span class="glyphicon glyphicon-pencil"></span>
+      </a>
+    </span>
+  </div>
+  <hr>
+  <article>{{ post.body }}</article>
+{% endblock %}
+

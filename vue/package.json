@@ -1,0 +1,36 @@
+{
+  "name": "vue",
+  "description": "A Vue.js project",
+  "version": "1.0.0",
+  "author": "pinkyrabbit <usesa@yandex.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "watch": "cross-env NODE_ENV=development webpack --watch --config webpack/webpack.dev.js",
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules --config webpack/webpack.prod.js"
+  },
+  "dependencies": {
+    "tiptap": "^1.13.0",
+    "tiptap-extensions": "^1.13.0",
+    "vue": "^2.5.11",
+    "vue-resource": "^1.5.1"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-stage-3": "^6.24.1",
+    "cross-env": "^5.0.5",
+    "css-loader": "^0.28.7",
+    "vue-loader": "^15.6.2",
+    "vue-template-compiler": "^2.4.4",
+    "webpack": "^4.28.4",
+    "webpack-cli": "^3.2.1",
+    "webpack-merge": "^4.2.1"
+  }
+}

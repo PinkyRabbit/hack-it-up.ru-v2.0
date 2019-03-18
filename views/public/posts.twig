@@ -7,12 +7,12 @@
       <div class="post">
       </div>
         <h2>
-          <a href="/article/{{post.url}}" title="{{post.h1}}">
+          <a href="/article/{{post.slug}}" title="{{post.h1}}">
             <i class="fa fa-github" aria-hidden="true"></i> {{post.h1}}
           </a>
         </h2>
-        <a href="/article/{{post.url}}" rel="nofollow">
-          <img class="img-responsive img-thumbnail" src="/posts/{{post.postimage}}" alt="{{post.title}}">
+        <a href="/article/{{post.slug}}" rel="nofollow">
+          <img class="img-responsive img-thumbnail" src="/images/uploads/{{post.postimage}}" alt="{{post.title}}">
         </a>
         <ol class="breadcrumb">
           <li>
@@ -24,7 +24,7 @@
         </ol>
         <p>
           {{post.description}} 
-          <a href="/article/{{post.url}}" rel="nofollow" class="linknext">#Читать далее</a>
+          <a href="/article/{{post.slug}}" rel="nofollow" class="linknext">#Читать далее</a>
         </p>
     {% endfor %}
 

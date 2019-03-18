@@ -42,7 +42,7 @@ module.exports.getAllNews = (page = 1) => {
       return Posts.find({
           published: true,
         }, {
-          sort : { createdAt : 1 },
+          sort : { createdAt : -1 },
           skip: (page - 1) * config.posts.limit,
           limit : config.posts.limit,
         })
@@ -55,6 +55,11 @@ module.exports.getAllNews = (page = 1) => {
   });
 };
 
+module.exports.findBySlug = (slug) => Posts.findOne({ slug });
+module.exports.findById = (_id) => Posts.findOne({ _id });
+
+module.exports.makeUnpublished = (_id) => Posts.update({ _id }, { $set: { published: false } });
+
 function rework() {
   return new Promise((resolve, reject) => {
     Posts.find({}).then((docs) => {
@@ -62,6 +67,7 @@ function rework() {
         let fixed;
         try {
           // fixed = fixTimestamps(obj); // @FIXME: DONE!
+          fixed = fixSlug(obj); // @FIXME: DONE!
         } catch(err) {
           console.error(err);
           fixed = obj;
@@ -90,6 +96,15 @@ function fixTimestamps(obj) {
     createdAt: new Date(createdate),
     updatedAt: new Date(updatedate),
   });
+
+  return newObj;
+}
+
+function fixSlug(obj) {
+  const { url, ...base } = obj;
+  const newObj = url ? Object.assign(base, {
+    slug: url,
+  }) : obj;
 
   return newObj;
 }

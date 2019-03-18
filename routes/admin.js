@@ -24,6 +24,12 @@ router.get('*', (req, res, next) => {
 
 // routes
 router
-  .get('/', AdminController.dashboard);
+  .get('/', AdminController.dashboard)
+  .get('/editpost/:id', AdminController.editpost)
+  .get('/edit/:id', AdminController.edit.get)
+  .put('/edit/:id', AdminController.edit.put)
+  .post('/edit/:id', AdminController.edit.post)
+  .get('/api', AdminController.api.get)
+  .post('/image', AdminController.image.post);
 
 module.exports = router;
