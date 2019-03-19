@@ -10,10 +10,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% if seo.description %}
       <meta name="description" content="{{ seo.description }}">
-    {% endif %}  
+    {% endif %}
     {% if seo.keywords %}
       <meta name="keywords" content="{{ seo.keywords }}">
-    {% endif %}  
+    {% endif %}
 
     <title>{{ seo.title ? 'hack-it-up.ru — ' ~ seo.title : 'hack-it-up.ru *_*' }}</title>
 
@@ -31,7 +31,7 @@
   </head>
   <body>
     <div class="container">
-      {{ navbar(menucats) }}
+      {{ navbar(menucats, user) }}
       {% if seo %}{{ header(seo) }}{% endif %}
       {% block body %}{% endblock %}
       <h1>{{ seo ? seo.h1 : 'Happy Hacking *_*' }}</h1>
@@ -39,6 +39,11 @@
         <div class="row">
           {% if seo and seo.sidebar %}
             <div class="col-xs-12 col-sm-9" id="content">
+              {% if messages is defined %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.type }}" role="alert" style="margin-bottom: 10px">{{ message.msg }}</div>
+                {% endfor %}
+              {% endif %}
               {% block bodyblock %}{% endblock %}
             </div>
             <aside class="col-xs-12 col-sm-3">
@@ -48,7 +53,12 @@
             </aside>
           {% else %}
             <div class="col-xs-12" id="content">
-              {% block bodyblock %}{% endblock %}
+                {% if messages is defined %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.type }}" role="alert" style="margin-bottom: 10px">{{ message.msg }}</div>
+                    {% endfor %}
+                {% endif %}
+                {% block bodyblock %}{% endblock %}
             </div>
           {% endif %}
         </div>
@@ -94,7 +104,7 @@
                     span.label.label-default #{tag.name}
             .clearfix
             if datescat
-              .archive 
+              .archive
                 h3 Архив записей
                 each date,i in datescat
                   ul

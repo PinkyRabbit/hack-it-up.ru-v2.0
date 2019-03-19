@@ -8,13 +8,14 @@ const cookieParser = require('cookie-parser');
 module.exports = (app) => {
   app.use(session({
     name: process.env.SESSION_NAME,
-    resave: true,
+    resave: false,
     saveUninitialized: false,
     secret: process.env.SESSION_SECRET,
     cookie: {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24,
       secure: 'auto',
+      sameSite: true,
     },
   }));
   app.use(cookieParser());

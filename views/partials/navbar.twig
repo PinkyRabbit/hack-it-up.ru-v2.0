@@ -1,4 +1,4 @@
-{% macro navbar(menucats) %}
+{% macro navbar(menucats, user) %}
   <nav class="navbar navbar-default navbar-static-top">
     <div class="navbar-header">
       <button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -28,15 +28,15 @@
                 {% endfor %}
                 <li>
                   <a href="/short", title="Перейти в заметки">
-                    <span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span> 
+                    <span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>
                     Заметки
                   </a>
                 </li>
               </ul>
           </li>
-        {% endif %}    
+        {% endif %}
         <li>
-          <a href="/refers",title="Мои рекомендации">Я рекомендую</a> 
+          <a href="/refers",title="Мои рекомендации">Я рекомендую</a>
         </li>
         <li>
           <a href="/flash" title="FLASH">FLASH</a>
@@ -45,39 +45,52 @@
           <a href="/contact" title="Контакты">Контакты</a>
         </li>
       </ul>
+
+      {% if user is defined %}
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ user }} <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li>
+                <a href="/admin"><span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span>Админка</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      {% endif %}
       {# if authxyz
         ul.nav.navbar-nav.navbar-right
             li(class="dropdown")
               a.dropdown-toggle(href="#",data-toggle="dropdown",role="button",aria-haspopup="true",aria-expanded="false")
-                | Админко 
+                | Админко
                 span.caret
               ul.dropdown-menu
                 li
-                  a(href="/admin") 
+                  a(href="/admin")
                     span.glyphicon.glyphicon-hourglass(aria-hidden="true")
                     |  История админки
                 li
-                  a(href="/admin/images", target="_blanc") 
+                  a(href="/admin/images", target="_blanc")
                     span.glyphicon.glyphicon-picture(aria-hidden="true")
                     |  Управление изображениями
                 li
-                  a(href="/refers/edit") 
+                  a(href="/refers/edit")
                     span.glyphicon.glyphicon-shopping-cart(aria-hidden="true")
                     |  Управление рекомендациями
                 li
-                  a(href="/admin/event") 
+                  a(href="/admin/event")
                     span.glyphicon.glyphicon-book(aria-hidden="true")
                     |  Статические страницы
                 li
-                  a(href="/admin/article") 
+                  a(href="/admin/article")
                     span.glyphicon.glyphicon-certificate(aria-hidden="true")
                     |  Добавить статью
                 li
-                  a(href="/unpublished") 
+                  a(href="/unpublished")
                     span.glyphicon.glyphicon-volume-off(aria-hidden="true")
-                    |  Неопубликованные статьи  
+                    |  Неопубликованные статьи
                 li
-                  a(href="/admin/short") 
+                  a(href="/admin/short")
                     span.glyphicon.glyphicon-paperclip(aria-hidden="true")
                     |  Добавить шорт
                 li.divider(role="separator")

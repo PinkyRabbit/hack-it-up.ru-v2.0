@@ -19,3 +19,13 @@ module.exports.translit = (str) => {
   result = result.replace(/\./g, '-');
   return result.trim();
 };
+
+// отдаём ошибки в виде массива
+module.exports.valErr = (errs) => {
+  const validationErrors = errs.mapped();
+  return Object
+    .keys(validationErrors)
+    .map((key) => {
+      return validationErrors[key].msg;
+    });
+};

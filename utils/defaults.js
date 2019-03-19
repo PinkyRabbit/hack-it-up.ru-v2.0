@@ -10,11 +10,11 @@ function createDefaultUser() {
   bcrypt.hash(process.env.ADMIN_PASSWORD, 10, (err, hash) => {
     if (err) return logger.error(err);
     const update = {
-      username: process.env.ADMIN_USERNAME,
+      username: process.env.ADMIN_EMAIL,
       password: hash,
     };
     return User.update(
-      { username: process.env.ADMIN_USERNAME },
+      { email: process.env.ADMIN_EMAIL },
       { $set: update },
       { upsert: true },
     );

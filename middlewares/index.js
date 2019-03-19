@@ -10,7 +10,12 @@ const passport    = require('passport');
 
 const sessions    = require('./sessions');
 const twitter     = require('./twitter');
+const makeFlash   = require('./flash');
 const compression = require('./compression');
+
+const authentication = require('../utils/authentication');
+
+authentication.init();
 
 module.exports = (app) => {
   app.use(helmet());
@@ -27,6 +32,7 @@ module.exports = (app) => {
   sessions(app);
 
   // passport
+
   app.use(passport.initialize());
   app.use(passport.session());
 
@@ -36,11 +42,7 @@ module.exports = (app) => {
   app.use(favicon(path.join(__dirname, '..', 'public', 'favicon.png')));
 
   app.use(flash());
-
-  app.use('*', (req, res, next) => {
-    console.log('req.user = ', req.user);
-    next();
-  });
+  app.get('*', makeFlash);
 
   // twitter(app); //@TODO: жду ответа от твиттера для ключиков
 };

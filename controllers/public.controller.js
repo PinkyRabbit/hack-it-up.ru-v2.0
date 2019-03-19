@@ -1,7 +1,10 @@
 'use strict';
 
-const moment = require('moment');
-const Posts = require('../db/posts');
+const moment               = require('moment');
+const passport             = require('passport');
+const { validationResult } = require('express-validator/check');
+const { valErr }           = require('../utils/common');
+const Posts                = require('../db/posts');
 
 module.exports.home = (req, res, next) => {
   res.locals.seo = {
@@ -36,8 +39,13 @@ module.exports.home = (req, res, next) => {
     .catch(err => next(err));
 };
 
+const login = (req, res, user) => {
+
+};
+
 module.exports.login = {
   get: (req, res) => {
+    if (req.user) return res.redirect('/admin');
     res.locals.seo = {
       google: false,
       sidebar: false,
@@ -48,9 +56,29 @@ module.exports.login = {
       description: 'Страничка входа =) Только нафиг она вам сдалась-то?',
     };
 
+    res.locals.csrf = req.csrfToken();
     return res.render('public/login');
   },
   post: (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      req.session.validationErrors = valErr(errors);
+      return res.redirect('back');
+    }
 
+    return passport.authenticate('local', (err, user, msg) => {
+      if (err) return next(err);
+      if (msg) {
+        req.flash('info', msg.message);
+        return res.redirect('back');
+      }
+      return req.logIn(user, (err) => {
+        if (err) return next(err);
+        return req.session.save(() => {
+          req.flash('success', 'Вижу вас как на яву!');
+          res.redirect('/admin');
+        });
+      });
+    })(req, res, next);
   },
 };
