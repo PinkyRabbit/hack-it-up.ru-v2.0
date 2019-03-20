@@ -1,5 +1,16 @@
 {% extends '../layout.twig' %}
 
 {% block bodyblock %}
-  Контент...
+  {% if posts is defined %}
+    <h3>Неопубликованные материалы</h3>
+    <ul class="list-group">
+    {% for post in posts %}
+      <li class="list-group-item">
+        {{ post.createdAt }}
+        <a href="/admin/edit/{{ post._id }}">{{ post.h1 }}</a>
+        <a href="/admin/delete/{{ post._id }}" class="delete-x">X</a>
+      </li>
+    {% endfor %}
+    </ul>
+  {% endif %}
 {% endblock %}

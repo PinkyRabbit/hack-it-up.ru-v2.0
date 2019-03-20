@@ -26,7 +26,7 @@ module.exports.home = (req, res, next) => {
 
   Posts.getAllNews(page)
     .then((p) => {
-      console.log(p)
+      // console.log(p)
       const posts = p.filtred.map(x => ({
         ...x,
         createdate: moment(x.createdAt).format('lll'),

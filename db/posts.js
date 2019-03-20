@@ -57,8 +57,10 @@ module.exports.getAllNews = (page = 1) => {
 
 module.exports.findBySlug = (slug) => Posts.findOne({ slug });
 module.exports.findById = (_id) => Posts.findOne({ _id });
-
 module.exports.makeUnpublished = (_id) => Posts.update({ _id }, { $set: { published: false } });
+module.exports.publish = (_id) => Posts.update({ _id }, { $set: { published: true } });
+module.exports.findUnpublished = () => Posts.find({ published: false });
+module.exports.updateById = (_id, update) => Posts.update({ _id }, { $set: update });
 
 function rework() {
   return new Promise((resolve, reject) => {

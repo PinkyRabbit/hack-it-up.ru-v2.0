@@ -3,14 +3,12 @@
 module.exports = (req, res, next) => {
   const messages = [];
   // primary success danger
-  if (req.flash) {
-    const FL = req.flash();
-    if (Object.keys(FL).length) {
-      for (const prop in FL) { // eslint-disable-line no-restricted-syntax
-        if (Object.prototype.hasOwnProperty.call(FL, prop) && FL[prop].length) {
-          for (let count = 0; count < FL[prop].length; count += 1) {
-            messages.push({ type: prop, msg: FL[prop][count] });
-          }
+  const flash = req.flash();
+  if (flash) {
+    for (const key in flash) { // eslint-disable-line no-restricted-syntax
+      if (Object.prototype.hasOwnProperty.call(flash, key) && flash[key].length) {
+        for (let count = 0; count < flash[key].length; count += 1) {
+          messages.push({ type: key, msg: flash[key][count] });
         }
       }
     }

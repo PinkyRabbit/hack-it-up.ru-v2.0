@@ -5,6 +5,7 @@ require('dotenv').config();
 const createError = require('http-errors');
 const path        = require('path');
 const multer      = require('multer');
+const moment      = require('moment');
 const sharp       = require('sharp');
 const base64      = require('node-base64-image');
 const Posts       = require('../db/posts');
@@ -13,7 +14,16 @@ const Categories  = require('../db/cats');
 const common      = require('../utils/common');
 const logger      = require('../utils/logger');
 
-module.exports.dashboard = (req, res, next) => {
+module.exports.dashboard = async (req, res, next) => {
+  const posts = await Posts.findUnpublished();
+  res.locals.posts = posts
+    .sort((a, b) => b.updatedAt - a.updatedAt)
+    .map(x => ({
+      _id: x._id,
+      h1: x.h1,
+      createdAt: moment(x.createdAt).format('DD.MM.YY, hh:mm'),
+    }));
+
   res.render('admin/dashboard');
 };
 
@@ -23,6 +33,18 @@ module.exports.editpost = (req, res, next) => {
     .then((result) => {
       if (!result.n) return next();
       return res.redirect(`/admin/edit/${req.params.id}`);
+    })
+    .catch(err => next(err));
+};
+
+module.exports.publish = (req, res, next) => {
+  if (!req.params || !req.params.id) return next();
+  return Posts.publish(req.params.id)
+    .then((result) => {
+      if (!result.n) return next();
+      let url = '/';
+      if (req.query && req.query.slug) url = `/article/${req.query.slug}`;
+      return res.redirect(url);
     })
     .catch(err => next(err));
 };
@@ -50,13 +72,17 @@ module.exports.edit = {
       h1: req.body.h1,
       keywords: req.body.keywords,
       postimage: req.body.postimage,
-      slug: req.body.slug,
+      slug: req.body.slug || req.params.id,
       tags: req.body.tags.split(','),
       title: req.body.title,
       updatedAt: new Date(),
     };
-    return Posts.update({ _id: req.params.id }, { $set: update })
-      .then(() => res.json({ success: true }))
+    return Posts.updateById(req.params.id, update)
+      .then(() => {
+        const url = `/article/${update.slug}`;
+        req.flash('Статья успешно сохранена!');
+        return res.redirect(url);
+      })
       .catch(err => next(err));
   },
   put: (req, res) => {

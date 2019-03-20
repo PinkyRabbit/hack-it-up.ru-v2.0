@@ -29,6 +29,7 @@ router
   .get('/edit/:id', AdminController.edit.get)
   .put('/edit/:id', AdminController.edit.put)
   .post('/edit/:id', AdminController.edit.post)
+  .get('/publish/:id', AdminController.publish)
   .get('/api', AdminController.api.get)
   .post('/image', AdminController.image.post);
 

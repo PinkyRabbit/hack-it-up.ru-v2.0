@@ -13,6 +13,11 @@ router.get('*', (req, res, next) => {
   next();
 });
 
+router.get('/flash', (req, res) => {
+  req.flash('info', 'Hello world!');
+  res.redirect('back');
+});
+
 router.get('/login', PublicController.login.get);
 router.post('/login', loginValidation, PublicController.login.post);
 router.get('/', PublicController.home);

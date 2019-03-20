@@ -12,11 +12,18 @@
           <span class="label label-warning"></span> {{tag.name}}
         </a>
       {% endfor %}
-      <a href="/admin/editpost/{{post._id}}" data-toggle="tooltip" data-placement="top" title="Править">
-        <span class="glyphicon glyphicon-pencil"></span>
-      </a>
+      {% if user is defined %}
+        <a href="/admin/editpost/{{post._id}}" data-toggle="tooltip" data-placement="top" title="Править">
+          <span class="glyphicon glyphicon-pencil"></span>
+        </a>
+      {% endif %}
     </span>
   </div>
+  {% if user is defined and post.published == false %}
+    <div class="alert alert-info" role="alert">
+      <strong>Внимание! Это превью!</strong> Статья пока что не опубликована. Для того чтобы её опубликовать нажмите <a href="/admin/publish/{{post._id}}?slug={{post.slug}}">вот тут</a>.
+    </div>
+  {% endif %}
   <hr>
   <article>{{ post.body }}</article>
 {% endblock %}
