@@ -1,7 +1,7 @@
 {% extends '../layout.twig' %}
 
 {% block bodyblock %}
-  {% if posts is defined %}
+  {% if posts %}
     <h3>Неопубликованные материалы</h3>
     <ul class="list-group">
     {% for post in posts %}
@@ -12,5 +12,7 @@
       </li>
     {% endfor %}
     </ul>
+  {% else %}
+    <h3>Все статьи опубликованы....</h3>
   {% endif %}
 {% endblock %}
