@@ -25,6 +25,7 @@ router.get('*', (req, res, next) => {
 // routes
 router
   .get('/', AdminController.dashboard)
+  .get('/new', AdminController.new)
   .get('/editpost/:id', AdminController.editpost)
   .get('/edit/:id', AdminController.edit.get)
   .put('/edit/:id', AdminController.edit.put)

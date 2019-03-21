@@ -27,6 +27,12 @@ module.exports.dashboard = async (req, res, next) => {
   res.render('admin/dashboard');
 };
 
+module.exports.new = (req, res, next) => {
+  Posts.createNew(req.user)
+    .then(post => res.redirect(`/admin/edit/${post._id}`))
+    .catch(err => next(err));
+};
+
 module.exports.editpost = (req, res, next) => {
   if (!req.params || !req.params.id) return next();
   return Posts.makeUnpublished(req.params.id)

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "yarn ./bin/www",
-    "nodemon": "nodemon ./bin/www NODE_ENV=development"
+    "nodemon": "NODE_ENV=development nodemon ./bin/www"
   },
   "dependencies": {
     "@log4js-node/smtp": "^1.1.0",

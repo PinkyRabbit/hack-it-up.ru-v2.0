@@ -62,6 +62,11 @@ module.exports.publish = (_id) => Posts.update({ _id }, { $set: { published: tru
 module.exports.findUnpublished = () => Posts.find({ published: false });
 module.exports.updateById = (_id, update) => Posts.update({ _id }, { $set: update });
 
+module.exports.createNew = (user) => {
+
+};
+
+
 function rework() {
   return new Promise((resolve, reject) => {
     Posts.find({}).then((docs) => {

@@ -7,15 +7,14 @@ module.exports.article = {
   get: (req, res, next) => {
     if (!req.params || !req.params.slug) return next();
     let p;
-    console.log(req.params.slug)
     return Posts.findBySlug(req.params.slug)
       .then((post) => {
-        return res.send('123')
         if (!post) return next();
         if (!post.published && !req.user) {
           req.flash('info', 'Сейчас статья редактируется. Вы можете прочесть её позже.');
           return res.redirect('/');
         }
+        console.log(post);
         res.locals.seo = {
           google: post.published,
           sidebar: true,

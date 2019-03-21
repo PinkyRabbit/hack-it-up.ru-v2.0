@@ -31,7 +31,7 @@
   </head>
   <body>
     <div class="container">
-      {{ navbar(menucats, user) }}
+      {{ navbar(menucats, user, development) }}
       {% if seo %}{{ header(seo) }}{% endif %}
       {% block body %}{% endblock %}
       <h1>{{ seo ? seo.h1 : 'Happy Hacking *_*' }}</h1>
