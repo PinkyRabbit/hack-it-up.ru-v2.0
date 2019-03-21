@@ -12,5 +12,46 @@
       </li>
     {% endfor %}
     </ul>
+  {% else %}
+    <h3>Неопубликованных материалов нет...</h3>
+  {% endif %}
+
+  {% if categories is defined %}
+    <h3>Категории</h3>
+    <table>
+      <thead>
+        <tr>
+          <td>name</td>
+          <td>url</td>
+          <td>description</td>
+          <td>act</td>
+        </tr>
+      </thead>
+      <tbody>
+        {% for category in categories %}
+          <tr>
+            <td>{{category.name}}</td>
+            <td>{{category.url}}</td>
+            <td>{{category.description}}</td>
+            <td>act</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+
+    _id: 594ea61a45ba455c57bc34ac,
+    name: 'Бизнес идеи',
+    url: 'byznes-ydey',
+    description:
+     'Я не особо хотел бы фокусировать мысли на бизнес задумках в сети, но, как говориться, из песни слов не выкинешь. Буду делиться всем, что найду, в этом разделе.' } 
+  {% else %}
+    <h3>Созданных категорий нет...</h3>
+  {% endif %}
+
+  {% if tags is defined %}
+    <h3>Теги</h3>
+  {% else %}
+    <h3>Созданных тегов нет...</h3>
   {% endif %}
 {% endblock %}

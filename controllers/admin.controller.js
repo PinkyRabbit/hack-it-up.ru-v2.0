@@ -14,7 +14,7 @@ const Categories  = require('../db/cats');
 const common      = require('../utils/common');
 const logger      = require('../utils/logger');
 
-module.exports.dashboard = async (req, res, next) => {
+module.exports.dashboard = async (req, res) => {
   const posts = await Posts.findUnpublished();
   res.locals.posts = posts
     .sort((a, b) => b.updatedAt - a.updatedAt)
@@ -23,6 +23,13 @@ module.exports.dashboard = async (req, res, next) => {
       h1: x.h1,
       createdAt: moment(x.createdAt).format('DD.MM.YY, hh:mm'),
     }));
+
+  const cats = await Categories.getAll();
+  res.locals.categories = cats;
+  console.log(cats)
+
+  const tags = await Tags.getAll();
+  res.locals.tags = tags;
 
   res.render('admin/dashboard');
 };
@@ -211,6 +218,5 @@ module.exports.image = {
           }))
         .catch(err => res.send(err));
     });
-
   },
 };

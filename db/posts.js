@@ -1,6 +1,7 @@
 'use strict';
 
 const createError   = require('http-errors');
+const moment        = require('moment');
 const config        = require('../config');
 const getPagination = require('../utils/pagination');
 const Posts         = require('./index').get('posts');
@@ -63,7 +64,13 @@ module.exports.findUnpublished = () => Posts.find({ published: false });
 module.exports.updateById = (_id, update) => Posts.update({ _id }, { $set: update });
 
 module.exports.createNew = (user) => {
-
+  const date = new Date();
+  Posts.insert({
+    dateurl: moment(date).format('MM-YYYY'),
+    published: false,
+    createdAt: date,
+    updatedAt: date,
+  });
 };
 
 

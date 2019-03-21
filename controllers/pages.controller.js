@@ -14,7 +14,7 @@ module.exports.article = {
           req.flash('info', 'Сейчас статья редактируется. Вы можете прочесть её позже.');
           return res.redirect('/');
         }
-        console.log(post);
+        console.log(post)
         res.locals.seo = {
           google: post.published,
           sidebar: true,
