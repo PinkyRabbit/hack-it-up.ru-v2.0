@@ -21,7 +21,7 @@ module.exports.article = {
           title: post.title,
           h1: post.h1,
           keywords: post.keywords,
-          image: post.postimage || `/uploads/${post.postimage}`,
+          image: post.postimage && `/uploads/${post.postimage}`,
           description: post.description,
         };
 
