@@ -8,27 +8,27 @@ module.exports.article = {
     if (!req.params || !req.params.slug) return next();
     let p;
     return Posts.findBySlug(req.params.slug)
-      .then((post) => {
+      .then(async (post) => {
         if (!post) return next();
         if (!post.published && !req.user) {
           req.flash('info', 'Сейчас статья редактируется. Вы можете прочесть её позже.');
           return res.redirect('/');
         }
-        console.log(post);
+
         res.locals.seo = {
           google: post.published,
           sidebar: true,
           title: post.title,
           h1: post.h1,
           keywords: post.keywords,
-          image: `/uploads/${post.postimage}`,
+          image: post.postimage || `/uploads/${post.postimage}`,
           description: post.description,
         };
 
         p = Object.assign({}, post);
-        return Cats.bySlug(post.category);
+        const c = await Cats.bySlug(post.category);
+        return res.render('public/article', { post: p, postcat: c });
       })
-      .then(c => res.render('public/article', { post: p, postcat: c }))
       .catch(err => next(err));
   },
 };

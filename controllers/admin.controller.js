@@ -14,7 +14,7 @@ const Categories  = require('../db/cats');
 const common      = require('../utils/common');
 const logger      = require('../utils/logger');
 
-module.exports.dashboard = async (req, res, next) => {
+module.exports.dashboard = async (req, res) => {
   const posts = await Posts.findUnpublished();
   res.locals.posts = posts
     .sort((a, b) => b.updatedAt - a.updatedAt)
@@ -23,6 +23,12 @@ module.exports.dashboard = async (req, res, next) => {
       h1: x.h1,
       createdAt: moment(x.createdAt).format('DD.MM.YY, hh:mm'),
     }));
+
+  const cats = await Categories.getAll();
+  res.locals.categories = cats;
+
+  const tags = await Tags.getAll();
+  res.locals.tags = tags;
 
   res.render('admin/dashboard');
 };
@@ -60,7 +66,7 @@ module.exports.edit = {
   get: (req, res, next) => {
     if (!req.params || !req.params.id) return next();
     res.locals.scripts = {};
-    res.locals.scripts.costume = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : '';
+    res.locals.scripts.costume = process.env.VUE === 'development' ? 'http://localhost:3000' : '';
     res.locals.scripts.costume += '/js/edit-news.js';
     return Posts.findById(req.params.id)
       .then((post) => {
@@ -71,6 +77,7 @@ module.exports.edit = {
   },
   post: (req, res, next) => {
     if (!req.params || !req.params.id) return next();
+    if (!req.user) return next(createError(401, 'Unauthorized'));
     const update = {
       body: req.body.body,
       category: req.body.category,
@@ -79,7 +86,7 @@ module.exports.edit = {
       keywords: req.body.keywords,
       postimage: req.body.postimage,
       slug: req.body.slug || req.params.id,
-      tags: req.body.tags.split(','),
+      tags: req.body.tags.length ? req.body.tags.split(',') : [],
       title: req.body.title,
       updatedAt: new Date(),
     };
@@ -101,11 +108,11 @@ module.exports.edit = {
       keywords: req.body.keywords,
       postimage: req.body.postimage,
       slug: req.body.slug,
-      tags: req.body.tags.split(','),
+      tags: req.body.tags.length ? req.body.tags.split(',') : [],
       title: req.body.title,
       updatedAt: new Date(),
     };
-    return Posts.update({ _id: req.params.id }, { $set: update })
+    return Posts.updateById(req.params.id, update)
       .then(() => res.json({ success: true }))
       .catch(err => res.send(err));
   },
@@ -116,7 +123,11 @@ module.exports.api = {
     if (!req.query) return res.json(createError(403, 'query id is empty'));
     if (req.query.post) {
       return Posts.findById(req.query.post)
-        .then(post => res.json(post))
+        .then((post) => {
+          // eslint-disable-next-line
+          if (!post.author && req.user) post.author = req.user.username;
+          return res.json(post);
+        })
         .catch(err => res.send(err));
     }
 
@@ -211,6 +222,17 @@ module.exports.image = {
           }))
         .catch(err => res.send(err));
     });
+  },
+};
 
+module.exports.delete = {
+  post: (req, res, next) => {
+    if (!req.params.id) return next(createError(403, 'query id is empty'));
+    return Posts.delete(req.params.id)
+      .then(() => {
+        req.flash('danger', 'Неопубликованный пост успешно удалён');
+        return res.redirect('back');
+      })
+      .catch(err => res.send(err));
   },
 };

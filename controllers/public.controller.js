@@ -32,15 +32,9 @@ module.exports.home = (req, res, next) => {
         createdate: moment(x.createdAt).format('lll'),
       }));
 
-      // console.log(posts)
-
-      res.render('public/posts', { posts, pagination: p.pagination });
+      return res.render('public/posts', { posts, pagination: p.pagination });
     })
     .catch(err => next(err));
-};
-
-const login = (req, res, user) => {
-
 };
 
 module.exports.login = {

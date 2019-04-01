@@ -1,7 +1,7 @@
 <template>
   <div> 
     <div class="form-group">
-      <label class="control-label" for="categories">Категории</label>
+      <label class="control-label" for="categories">Категория</label>
       <input 
         name="categories"
         id="categories"

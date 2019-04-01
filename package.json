@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "yarn ./bin/www",
-    "nodemon": "NODE_ENV=development nodemon ./bin/www"
+    "nodemon": "NODE_ENV=development nodemon ./bin/www",
+    "vue": "NODE_ENV=development VUE=development nodemon ./bin/www"
   },
   "dependencies": {
     "@log4js-node/smtp": "^1.1.0",

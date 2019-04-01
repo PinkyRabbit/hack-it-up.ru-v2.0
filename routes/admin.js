@@ -31,6 +31,7 @@ router
   .put('/edit/:id', AdminController.edit.put)
   .post('/edit/:id', AdminController.edit.post)
   .get('/publish/:id', AdminController.publish)
+  .get('/delete/:id', AdminController.delete.post)
   .get('/api', AdminController.api.get)
   .post('/image', AdminController.image.post);
 

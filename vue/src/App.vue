@@ -134,7 +134,7 @@ export default {
       this.$http.put(url, body)
         .then(response => {
           // get body data
-          console.log(updated);
+          console.log('autoUpdate =>', response.body);
         }, response => {
           console.error(response);
         });
