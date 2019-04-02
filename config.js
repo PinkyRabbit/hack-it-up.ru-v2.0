@@ -12,4 +12,5 @@ module.exports = {
     token_key: process.env.TWITTER_ACCESS_TOKEN,
     token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
   },
+  recaptcha: process.env.RECAPTCHA_SECRET,
 };

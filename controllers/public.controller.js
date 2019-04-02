@@ -8,6 +8,11 @@ const Posts                = require('../db/posts');
 const Categories           = require('../db/cats');
 const Tag                  = require('../db/tags');
 
+const author = {
+  username: process.env.TG_USERNAME,
+  url: process.env.TG_LINK,
+};
+
 module.exports.home = async (req, res, next) => {
   res.locals.seo = {
     google: true,
@@ -27,10 +32,6 @@ module.exports.home = async (req, res, next) => {
   }
 
   const p = await Posts.getAllNews(page);
-  const author = {
-    username: process.env.TG_USERNAME,
-    url: process.env.TG_LINK,
-  };
   const posts = p.filtred.map(x => ({
     ...x,
     createdate: moment(x.createdAt).format('lll'),
@@ -42,6 +43,9 @@ module.exports.home = async (req, res, next) => {
 
 module.exports.login = {
   get: (req, res) => {
+    res.locals.scripts = {};
+    res.locals.scripts.costume = 'https://www.google.com/recaptcha/api.js';
+
     if (req.user) return res.redirect('/admin');
     res.locals.seo = {
       google: false,
@@ -84,12 +88,29 @@ let lastq = '';
 let lastTO = '';
 function activateSearch(cb) {
   if (lastTO) {
-    return cb(false);
+    return cb([]);
   }
   lastTO = setTimeout(() => {
-    clearTimeout(lastTO);
-    lastTO = null;
-    cb(true);
+    const re = lastq
+      .trim()
+      .replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    
+    Posts.search(re)
+      .then((posts) => {
+        const links = posts.map(x => ({
+          text: x.h1,
+          url: x.slug,
+        }));
+
+        clearTimeout(lastTO);
+        lastTO = null;
+
+        cb(links);
+      })
+      .catch((err) => {
+        logger.error(err);
+        cb([]);
+      });
   }, 200);
 }
 

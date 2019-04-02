@@ -58,7 +58,7 @@ module.exports.me = (req, res, next) => {
   res.locals.seo = {
     google: true,
     sidebar: true,
-    title: 'Вход...',
+    title: 'О себе',
     h1: 'Вижу Вас как на яву!',
     keywords: 'Про меня',
     image: 'standart/aboutme.jpg',

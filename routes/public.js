@@ -5,10 +5,10 @@ const Categories = require('../db/cats');
 
 const router = express.Router();
 
-
+const recaptcha           = require('../utils/recaptcha');
 const { loginValidation } = require('../utils/validators');
-const PublicController = require('../controllers/public.controller');
-const PagesController  = require('../controllers/pages.controller');
+const PublicController    = require('../controllers/public.controller');
+const PagesController     = require('../controllers/pages.controller');
 
 const globals = async (req, res, next) => {
   if (req.user) res.locals.user = req.user.email;
@@ -32,7 +32,7 @@ router.get('/about-me', PagesController.me);
 router.get('/category/:slug', PublicController.category.get);
 router.get('/tag/:slug', PublicController.tag.get);
 router.get('/login', PublicController.login.get);
-router.post('/login', loginValidation, PublicController.login.post);
+router.post('/login', recaptcha, loginValidation, PublicController.login.post);
 router.get('/search/:q', PublicController.search);
 router.get('/', globals, PublicController.home);
 

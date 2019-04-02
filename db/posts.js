@@ -62,10 +62,20 @@ module.exports.createNew = (user) => {
   });
 };
 
-module.exports.search = (query) => {
-  Posts.find({
-    // @FIXME: продолжить тут
-  })
+module.exports.search = (re) => {
+  return Posts.find({
+    $and: [
+      { published: true },
+      {
+        $or: [
+          { h1: { $regex: re, $options: 'i' } },
+          { title: { $regex: re, $options: 'i' } },
+          { description: { $regex: re, $options: 'i' } },
+          { keywords: { $regex: re, $options: 'i' } },
+        ],
+      },
+    ],
+  });
 };
 
 function rework() {
