@@ -23,8 +23,8 @@
         @change="changeImage">
     </div>
     <div class="form-group" v-show="!showImg">
-      <label for="postimage">Изображение поста(800x350)</label>
-      <input type="file" id="postimage" name="postimage" class="form-control">
+      <label for="postimage">Изображение поста (800x350)</label>
+      <input type="file" id="postimage" name="postimage" class="form-control" @change="changeImage">
     </div>
   </div>
 </template>

@@ -16,7 +16,7 @@
         </a>
         <ol class="breadcrumb">
           <li>
-            <span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{ post.author }}
+            <span class="glyphicon glyphicon-user" aria-hidden="true"></span> <a href="{{post.author.url}}" target="_blank">{{ post.author.username }}</a>
           </li>
           <li>
             <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> {{ post.createdate }}

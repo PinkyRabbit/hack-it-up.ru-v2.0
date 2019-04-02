@@ -5,10 +5,12 @@ require('dotenv').config();
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 
+const RESAVE = !(process.env.NODE_ENV === 'production');
+
 module.exports = (app) => {
   app.use(session({
     name: process.env.SESSION_NAME,
-    resave: false,
+    resave: RESAVE,
     saveUninitialized: false,
     secret: process.env.SESSION_SECRET,
     cookie: {

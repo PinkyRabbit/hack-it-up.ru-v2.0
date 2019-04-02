@@ -8,7 +8,7 @@ module.exports = (docs, page, limit, path) => {
     '<ul class="pagination">',
   ];
 
-  if (pages < 8) {
+  if (!pages || pages < 8) {
     for (let i = 1; i < (pages + 1); i += 1) {
       const elem = i === page
         ? `<li class="active"><a href="#" class="prevent">${page} <span class="sr-only">(current)</span></a></li>`

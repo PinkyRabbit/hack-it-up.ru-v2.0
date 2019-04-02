@@ -36,7 +36,7 @@ article .embed-responsive{
   padding: 20px;
 }
 #content{
-  padding: 20px;
+  padding: 0 20px;
 }
 .navbar{
   margin-bottom: 0
@@ -203,7 +203,7 @@ ol.breadcrumb{
 }
 
 .meta-post{
-  padding-bottom: 15px;
+  padding-bottom: 40px;
 }
 
 .meta-post .pull-right a{
@@ -247,6 +247,26 @@ ol.breadcrumb{
   color: #ffffff!important;
 }
 
+#search {
+  background: none;
+  border: none;
+  margin-top: 10px;
+  margin-right: 10px;
+  border-bottom: 1px solid #876e69;
+  color: #f5efbd;
+  font-size: 1.3em;
+  text-align: center;
+}
+#search:focus{
+  outline: none;
+}
+
+#searchmenu {
+  position: absolute;
+  z-index: 1;
+  top: 50px;
+  right: 10px;
+}
 
 .subscription{
   border: 1px solid #cdcdcd;

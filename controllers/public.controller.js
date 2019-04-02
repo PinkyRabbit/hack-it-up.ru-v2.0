@@ -5,8 +5,9 @@ const passport             = require('passport');
 const { validationResult } = require('express-validator/check');
 const { valErr }           = require('../utils/common');
 const Posts                = require('../db/posts');
+const Categories           = require('../db/cats');
 
-module.exports.home = (req, res, next) => {
+module.exports.home = async (req, res, next) => {
   res.locals.seo = {
     google: true,
     sidebar: true,
@@ -24,17 +25,20 @@ module.exports.home = (req, res, next) => {
     res.locals.seo.description += `Страница ${page}. ${res.locals.seo.description}`;
   }
 
-  Posts.getAllNews(page)
-    .then((p) => {
-      // console.log(p)
-      const posts = p.filtred.map(x => ({
-        ...x,
-        createdate: moment(x.createdAt).format('lll'),
-      }));
+  const p = await Posts.getAllNews(page);
+  const author = {
+    username: process.env.TG_USERNAME,
+    url: process.env.TG_LINK,
+  };
+  const posts = p.filtred.map(x => ({
+    ...x,
+    createdate: moment(x.createdAt).format('lll'),
+    author,
+  }));
 
-      return res.render('public/posts', { posts, pagination: p.pagination });
-    })
-    .catch(err => next(err));
+  const menucats = await Categories.getAll();
+
+  return res.render('public/posts', { posts, pagination: p.pagination, menucats });
 };
 
 module.exports.login = {
@@ -76,3 +80,21 @@ module.exports.login = {
     })(req, res, next);
   },
 };
+
+let lastq = '';
+let lastTO = '';
+function activateSearch(cb) {
+  if (lastTO) {
+    return cb(false);
+  }
+  lastTO = setTimeout(() => {
+    clearTimeout(lastTO);
+    lastTO = null;
+    cb(true);
+  }, 200);
+}
+
+module.exports.search = (req, res) => {
+  lastq = req.params.q;
+  activateSearch(result => res.send(result));
+}

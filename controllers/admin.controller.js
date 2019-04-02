@@ -75,9 +75,13 @@ module.exports.edit = {
       })
       .catch(err => next(err));
   },
-  post: (req, res, next) => {
+  post: async (req, res, next) => {
     if (!req.params || !req.params.id) return next();
     if (!req.user) return next(createError(401, 'Unauthorized'));
+    const tags = Array.isArray(req.body.tags)
+      ? req.body.tags
+      : req.body.tags.split(',');
+
     const update = {
       body: req.body.body,
       category: req.body.category,
@@ -86,20 +90,29 @@ module.exports.edit = {
       keywords: req.body.keywords,
       postimage: req.body.postimage,
       slug: req.body.slug || req.params.id,
-      tags: req.body.tags.length ? req.body.tags.split(',') : [],
+      tags,
       title: req.body.title,
       updatedAt: new Date(),
     };
-    return Posts.updateById(req.params.id, update)
-      .then(() => {
-        const url = `/article/${update.slug}`;
-        req.flash('Статья успешно сохранена!');
-        return res.redirect(url);
-      })
-      .catch(err => next(err));
+
+    try {
+      await Categories.createNew(req.body.category);
+      await Posts.updateById(req.params.id, update);
+      req.flash('success', 'Статья успешно сохранена!');
+    } catch (err) {
+      logger.error(err);
+      req.flash('warning', 'Статья сохранена с ошибками. При повторе этого сообщения пишите администратору.');
+    }
+
+    const url = `/article/${update.slug}`;
+    return res.redirect(url);
   },
   put: (req, res) => {
     if (!req.params || !req.params.id) return res.json({ success: false });
+    const tags = Array.isArray(req.body.tags)
+      ? req.body.tags
+      : req.body.tags.split(',');
+
     const update = {
       body: req.body.body,
       category: req.body.category,
@@ -108,7 +121,7 @@ module.exports.edit = {
       keywords: req.body.keywords,
       postimage: req.body.postimage,
       slug: req.body.slug,
-      tags: req.body.tags.length ? req.body.tags.split(',') : [],
+      tags,
       title: req.body.title,
       updatedAt: new Date(),
     };
@@ -234,5 +247,43 @@ module.exports.delete = {
         return res.redirect('back');
       })
       .catch(err => res.send(err));
+  },
+};
+
+module.exports.category = {
+  delete: async (req, res, next) => {
+    if (!req.params.url) return next(createError(403, 'param url is empty'));
+
+    let name;
+    try {
+      const cat = await Categories.bySlug(req.params.url);
+      name = cat.name; // eslint-disable-line
+      await Posts.removeCat(name);
+      await Categories.delete(name);
+    } catch (err) {
+      return next(err);
+    }
+
+    req.flash('info', `Категория ${name} успешно удалена`);
+    return res.redirect('back');
+  },
+};
+
+module.exports.tag = {
+  delete: async (req, res, next) => {
+    if (!req.params.url) return next(createError(403, 'param url is empty'));
+
+    let name;
+    try {
+      const tag = await Tags.bySlug(req.params.url);
+      name = tag.name; // eslint-disable-line
+      await Posts.removeTag(name);
+      await Tags.delete(name);
+    } catch (err) {
+      return next(err);
+    }
+
+    req.flash('info', `Тег ${name} успешно удалён`);
+    return res.redirect('back');
   },
 };

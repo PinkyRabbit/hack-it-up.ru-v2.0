@@ -63,6 +63,8 @@ module.exports.publish = (_id) => Posts.update({ _id }, { $set: { published: tru
 module.exports.findUnpublished = () => Posts.find({ published: false });
 module.exports.updateById = (_id, update) => Posts.update({ _id }, { $set: update });
 module.exports.delete = (_id) => Posts.remove({ _id });
+module.exports.removeCat = (name) => Posts.update({ category: name }, { $set: { category: '' } }, { multi: true });
+module.exports.removeTag = (name) => Posts.update({ tags: name }, { $pull: { tags: name } }, { multi: true });
 
 module.exports.createNew = (user) => {
   const date = new Date();
@@ -75,6 +77,11 @@ module.exports.createNew = (user) => {
   });
 };
 
+module.exports.search = (query) => {
+  Posts.find({
+    // @FIXME: продолжить тут
+  })
+};
 
 function rework() {
   return new Promise((resolve, reject) => {

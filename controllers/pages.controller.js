@@ -1,7 +1,10 @@
 'use strict';
 
-const Posts = require('../db/posts');
-const Cats = require('../db/cats');
+const logger = require('../utils/logger');
+
+const Posts      = require('../db/posts');
+const Categories = require('../db/cats');
+const Tags       = require('../db/tags');
 
 module.exports.article = {
   get: (req, res, next) => {
@@ -26,8 +29,22 @@ module.exports.article = {
         };
 
         p = Object.assign({}, post);
-        const c = await Cats.bySlug(post.category);
-        return res.render('public/article', { post: p, postcat: c });
+
+        let cats = [];
+        let tags = [];
+        try {
+          cats = await Categories.byName(post.category);
+          tags = await Tags.findByNames(post.tags);
+        } catch (err) {
+          logger.error(err);
+        }
+
+        return res.render('public/article', {
+          post: p,
+          postcat: cats,
+          posttags: tags,
+          tags: JSON.stringify(tags),
+        });
       })
       .catch(err => next(err));
   },

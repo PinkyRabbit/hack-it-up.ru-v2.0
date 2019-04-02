@@ -24,6 +24,7 @@ router.get('/flash', (req, res) => {
 router.get('/article/:slug', PagesController.article.get);
 router.get('/login', PublicController.login.get);
 router.post('/login', loginValidation, PublicController.login.post);
+router.get('/search/:q', PublicController.search);
 router.get('/', globals, PublicController.home);
 
 module.exports = router;
