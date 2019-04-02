@@ -6,6 +6,7 @@ const { validationResult } = require('express-validator/check');
 const { valErr }           = require('../utils/common');
 const Posts                = require('../db/posts');
 const Categories           = require('../db/cats');
+const Tag                  = require('../db/tags');
 
 module.exports.home = async (req, res, next) => {
   res.locals.seo = {
@@ -36,9 +37,7 @@ module.exports.home = async (req, res, next) => {
     author,
   }));
 
-  const menucats = await Categories.getAll();
-
-  return res.render('public/posts', { posts, pagination: p.pagination, menucats });
+  return res.render('public/posts', { posts, pagination: p.pagination });
 };
 
 module.exports.login = {
@@ -97,4 +96,78 @@ function activateSearch(cb) {
 module.exports.search = (req, res) => {
   lastq = req.params.q;
   activateSearch(result => res.send(result));
+}
+
+module.exports.category = {
+  get: async (req, res, next) => {
+    const { slug } = req.params;
+    const cat = await Categories.bySlug(slug);
+
+    res.locals.seo = {
+      google: true,
+      sidebar: true,
+      title: cat.name,
+      h1: cat.name,
+      keywords: '',
+      image: 'standart/main.jpg',
+      description: '',
+    };
+
+    const page = req.query && req.query.page ? parseInt(req.query.page, 10) : 1;
+    if (page !== 1) {
+      res.locals.seo.title += ` - Страница ${page}`;
+      res.locals.seo.h1 += ` - Страница ${page}`;
+      res.locals.seo.description += `Страница ${page}. ${res.locals.seo.description}`;
+    }
+
+    const p = await Posts.getAllNews(page, { category: cat.name });
+    const author = {
+      username: process.env.TG_USERNAME,
+      url: process.env.TG_LINK,
+    };
+    const posts = p.filtred.map(x => ({
+      ...x,
+      createdate: moment(x.createdAt).format('lll'),
+      author,
+    }));
+
+    return res.render('public/posts', { posts, pagination: p.pagination });
+  }
+}
+
+module.exports.tag = {
+  get: async (req, res, next) => {
+    const { slug } = req.params;
+    const tag = await Tag.bySlug(slug);
+
+    res.locals.seo = {
+      google: true,
+      sidebar: true,
+      title: tag.name,
+      h1: tag.name,
+      keywords: '',
+      image: 'standart/main.jpg',
+      description: '',
+    };
+
+    const page = req.query && req.query.page ? parseInt(req.query.page, 10) : 1;
+    if (page !== 1) {
+      res.locals.seo.title += ` - Страница ${page}`;
+      res.locals.seo.h1 += ` - Страница ${page}`;
+      res.locals.seo.description += `Страница ${page}. ${res.locals.seo.description}`;
+    }
+
+    const p = await Posts.getAllNews(page, { tag: tag.name });
+    const author = {
+      username: process.env.TG_USERNAME,
+      url: process.env.TG_LINK,
+    };
+    const posts = p.filtred.map(x => ({
+      ...x,
+      createdate: moment(x.createdAt).format('lll'),
+      author,
+    }));
+
+    return res.render('public/posts', { posts, pagination: p.pagination });
+  }
 }

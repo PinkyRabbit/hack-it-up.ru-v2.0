@@ -1,0 +1,21 @@
+{% macro meta(user, id, postcat, posttags) %}
+  <div class="meta-post">
+    <span class="pull-right">
+      {% for tag in posttags %}
+        <a href="/tag/{{tag.url}}" title="В раздел {{tag.name}}" data-toggle="tooltip" data-placement="bottom">
+          <span class="label label-warning"></span> {{tag.name}}
+        </a>
+      {% endfor %}
+      {% if user is defined %}
+        <a href="/admin/editpost/{{id}}" data-toggle="tooltip" data-placement="top" title="Править">
+          <span class="glyphicon glyphicon-pencil"></span>
+        </a>
+      {% endif %}
+    </span>
+    <span class="catbadge">
+      <a href="/category/{{ postcat.url }}" title="Смотреть категорию {{postcat.name}}">{{postcat.name}}</a>
+      <span></span>
+    </span>
+  </div>
+  <div class="clearfix"></div>
+{% endmacro %}

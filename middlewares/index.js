@@ -44,5 +44,5 @@ module.exports = (app) => {
   app.use(flash());
   app.get('*', makeFlash);
 
-  // twitter(app); //@TODO: жду ответа от твиттера для ключиков
+  // twitter(app); //@NOTE: не понадобилось
 };

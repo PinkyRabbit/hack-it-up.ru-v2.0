@@ -1,5 +1,9 @@
 'use strict';
 
+const fs           = require('fs');
+const path         = require('path');
+const { markdown } = require('markdown');
+
 const logger = require('../utils/logger');
 
 const Posts      = require('../db/posts');
@@ -48,4 +52,23 @@ module.exports.article = {
       })
       .catch(err => next(err));
   },
+};
+
+module.exports.me = (req, res, next) => {
+  res.locals.seo = {
+    google: true,
+    sidebar: true,
+    title: 'Вход...',
+    h1: 'Вижу Вас как на яву!',
+    keywords: 'Про меня',
+    image: 'standart/aboutme.jpg',
+    description: 'Тебя тоже нелегко узнать, — согласился Нумминорих. — Но пахнешь-то ты всё так же. — Как свеженькая кошачья какашка, — добавил я.',
+  };
+
+  const file = path.join(__dirname, '../README.md');
+  fs.readFile(file, 'utf-8', (err, data) => {
+    if (err) return next(err);
+    const html = markdown.toHTML(data);
+    return res.render('public/me', { html });
+  });
 };
