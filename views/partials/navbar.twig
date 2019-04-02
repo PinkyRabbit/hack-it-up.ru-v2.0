@@ -7,10 +7,10 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
+      <a href="/" title="На главную" class="navbar-brand">
+        <img src="/images/logo-min.jpg" alt="logo min">
+      </a>
     </div>
-    <a href="/" title="На главную" class="navbar-brand">
-      <img src="/images/logo-min.jpg", alt="logo min">
-    </a>
     <div class="navbar-collapse collapse" id="navbar">
       <ul class="nav navbar-nav">
         {% if menucats %}
@@ -26,12 +26,6 @@
                     </a>
                   </li>
                 {% endfor %}
-                <li>
-                  <a href="/short", title="Перейти в заметки">
-                    <span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>
-                    Заметки
-                  </a>
-                </li>
               </ul>
           </li>
         {% endif %}
