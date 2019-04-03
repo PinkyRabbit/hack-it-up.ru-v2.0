@@ -20,7 +20,7 @@ log4js.configure({
       SMTP: {
         service: 'Mail.ru',
         secure: true,
-        sender: `"Сайт hack-it-up" <${process.env.EMAIL_DELIVERY_EMAIL}>`,
+        sender: `Hello World <${process.env.EMAIL_DELIVERY_EMAIL}>`,
         subject: 'Ошибка на сайте',
         auth: {
           user: process.env.EMAIL_DELIVERY_EMAIL,
