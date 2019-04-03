@@ -30,7 +30,7 @@ const globals = async (req, res, next) => {
   next();
 };
 
-router.get(/^https?:\/\/www\.hack-it-up.ru\/[^\.]+$/, globals);
+router.get(/\/[^\.]+?$/, globals);
 
 router.get('/flash', (req, res) => {
   req.flash('info', 'Hello world!');

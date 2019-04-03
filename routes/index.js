@@ -11,11 +11,6 @@ module.exports = (app) => {
   app.use('/', pub);
   app.use('/admin', admin);
 
-  app.use((req, res, next) => {
-    console.log(`req.originalUrl = ${req.originalUrl}`);
-    next();
-  });
-
   // protection
   if (process.env.NODE_ENV === 'production') {
     app.set('trust proxy', 1);
