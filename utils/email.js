@@ -10,7 +10,7 @@ const smtpTransport = nodemailer.createTransport({
   },
 });
 
-const mailOptions = { from: 'Администрация hack-it-up.ru ✔ <no-reply@hack-it-up.ru>' };
+const mailOptions = { from: `Hello World <${process.env.EMAIL_DELIVERY_EMAIL}>` };
 
 function toHtml(str) {
   return str
@@ -26,7 +26,7 @@ module.exports = ({ to, subject, text }) => {
     mailOptions.subject = subject;
     mailOptions.text = text;
     mailOptions.html = toHtml(text);
-
+    console.log(mailOptions);
     smtpTransport.sendMail(mailOptions, (error, response) => {
       if (error) return reject(error);
       console.log(response);
