@@ -7,15 +7,12 @@ const path = require('path');
 
 const { transportOps } = require('./email');
 
-const FILENAME = path.resolve(__dirname, '../logs/app.log');
-
-const email = {
-  ...transportOps,
-  recipients: process.env.ADMIN_EMAIL,
+const SMTP = Object.assign(transportOps, {
   sender: `"Сайт hack-it-up" <${process.env.EMAIL_DELIVERY_EMAIL}>`,
   subject: 'Ошибка на сайте',
-  type: '@log4js-node/smtp',
-}
+});
+
+const FILENAME = path.resolve(__dirname, '../logs/app.log');
 
 log4js.configure({
   appenders: {
@@ -23,7 +20,12 @@ log4js.configure({
       type: 'stdout',
     },
     toFile: { type: 'file', filename: FILENAME },
-    email,
+    email: {
+      type: '@log4js-node/smtp',
+      recipients: process.env.ADMIN_EMAIL,
+      transport: 'SMTP',
+      SMTP,
+    },
   },
   categories: {
     default: {
