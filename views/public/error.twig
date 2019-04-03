@@ -6,12 +6,14 @@
   <p>Если ты читаешь это сообщение, то ты попал на страницу, которая не существует. Давай разберёмся почему это могло произойти.</p> 
 
   <!-- убрать для юзверей -->
-  <div class="alert alert-success" role="alert">
-    <p>Status: <strong>{{ error.status }}</strong></p>
-    <p>{{ error.message }}</p>
-  </div>
-  {% if error.stack %}
-    <pre>{{ error.stack }}</pre>
+  {% if user is defined  %}
+    <div class="alert alert-success" role="alert">
+      <p>Status: <strong>{{ error.status }}</strong></p>
+      <p>{{ error.message }}</p>
+    </div>
+    {% if error.stack %}
+      <pre>{{ error.stack }}</pre>
+    {% endif %}
   {% endif %}
 
   <h2>Возможные причины:</h2>
