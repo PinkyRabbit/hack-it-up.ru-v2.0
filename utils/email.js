@@ -20,7 +20,7 @@ function toHtml(str) {
     .replace(/\n/gm, '<br>');
 }
 
-module.exports = ({ to, subject, text }) => {
+const sendMail = ({ to, subject, text }) => {
   return new Promise((resolve, reject) => {
     mailOptions.to = to;
     mailOptions.subject = subject;
@@ -34,4 +34,9 @@ module.exports = ({ to, subject, text }) => {
       return resolve();
     });
   });
+};
+
+module.exports = {
+  smtpTransport,
+  sendMail,
 };

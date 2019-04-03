@@ -4,7 +4,7 @@ const moment               = require('moment');
 const passport             = require('passport');
 const { validationResult } = require('express-validator/check');
 const { valErr }           = require('../utils/common');
-const email                = require('../utils/email');
+const { sendMail }         = require('../utils/email');
 const Posts                = require('../db/posts');
 const Categories           = require('../db/cats');
 const Tag                  = require('../db/tags');
@@ -215,7 +215,7 @@ module.exports.error = (req, res, next) => {
     text: `От ${name}<${email}>\n\n${body}`
   };
 
-  email(obj)
+  sendMail(obj)
     .then(() => {
       req.flash('success', '<strong>Спасибо!</strong> Ваше сообщение успешно отправлено администрации сайта.');
       res.redirect('/');
