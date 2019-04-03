@@ -83,10 +83,19 @@ module.exports.subscribe = (req, res, next) => {
 
   const emailz = path.join(__dirname, '../subscribers.txt');
 
-  // eslint-disable-next-line
-  return fs.appendFile(emailz, req.body.email + '\n', (err) => {
-    if (err) logger.error(err);
-    req.flash('success', 'Ваша электронная почта успешно подписана на обновления сайта');
-    res.redirect('back');
+  return fs.readFile(emailz, 'utf-8', (err, data) => {
+    if (err) return next(err);
+
+    if (data.split('\n').includes(req.body.email)) {
+      req.flash('danger', 'Эта почта уже подписана на обновления');
+      return res.redirect('back');
+    }
+
+    // eslint-disable-next-line
+    return fs.appendFile(emailz, req.body.email + '\n', (err) => {
+      if (err) logger.error(err);
+      req.flash('success', 'Ваша электронная почта успешно подписана на обновления сайта');
+      res.redirect('back');
+    });
   });
 }
