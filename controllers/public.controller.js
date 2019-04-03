@@ -141,9 +141,9 @@ module.exports.category = {
       res.locals.seo.description += `Страница ${page}. ${res.locals.seo.description}`;
     }
 
-    const p = await Posts.getAllNews(page, { category: cat.name });
+    const p = await Posts.getAllNews(page, { category: cat.name }, `/category/${slug}`);
     console.log('Posts.getAllNews');
-    console.log(p);
+    console.log(p.pagination);
     const author = {
       username: process.env.TG_USERNAME,
       url: process.env.TG_LINK,
@@ -180,7 +180,7 @@ module.exports.tag = {
       res.locals.seo.description += `Страница ${page}. ${res.locals.seo.description}`;
     }
 
-    const p = await Posts.getAllNews(page, { tag: tag.name });
+    const p = await Posts.getAllNews(page, { tag: tag.name }, `/tag/${slug}`);
     const author = {
       username: process.env.TG_USERNAME,
       url: process.env.TG_LINK,

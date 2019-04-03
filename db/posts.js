@@ -9,7 +9,7 @@ const Posts         = require('./index').get('posts');
 // get all posts
 module.exports.getAll = () => Posts.find({});
 
-module.exports.getAllNews = (page = 1, filter = null) => {
+module.exports.getAllNews = (page = 1, filter = null, urlPrefix = '/') => {
   return new Promise((resolve, reject) => {
     let query = { published: true };
     if (filter) query = Object.assign(query, filter);
@@ -24,7 +24,7 @@ module.exports.getAllNews = (page = 1, filter = null) => {
         return reject(createError(404, 'Страница не существует'));
       }
 
-      const pagination = getPagination(docs, page, config.posts.limit, '/');
+      const pagination = getPagination(docs, page, config.posts.limit, urlPrefix);
       return Posts.find({
           published: true,
         }, {
