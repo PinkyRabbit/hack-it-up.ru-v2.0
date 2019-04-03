@@ -20,6 +20,7 @@ log4js.configure({
       recipients: process.env.ADMIN_EMAIL,
       sender: `"Сайт hack-it-up" <${process.env.EMAIL_DELIVERY_EMAIL}>`,
       subject: 'Ошибка на сайте',
+      sendInterval: 3600,
       transport: transportOps,
     },
   },
