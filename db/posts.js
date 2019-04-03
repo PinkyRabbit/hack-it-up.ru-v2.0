@@ -11,6 +11,24 @@ module.exports.getAll = () => Posts.find({});
 
 module.exports.getAllNews = (page = 1, filter = null, urlPrefix = '/') => {
   return new Promise((resolve, reject) => {
+
+    Posts.find({})
+      .then((docs) => {
+        return rework(docs)
+      })
+      .catch((err) => reject(err))
+      .then(() => {
+        return Posts.find({ published: true }).then((docs) => {
+          // if (docs.length < config.posts.limit) {
+            console.log(docs[0])
+            const res = docs.sort((a, b) => b.cteatedAt - a.cteatedAt);
+            return resolve(res);
+          // }
+        });
+      })
+      .catch((err) => reject(err));
+
+    /* @NOTE: For rework only!
     let query = { published: true };
     if (filter) query = Object.assign(query, filter);
 
@@ -36,8 +54,7 @@ module.exports.getAllNews = (page = 1, filter = null, urlPrefix = '/') => {
           return resolve({ filtred, pagination });
         });
     });
-
-//  ,
+        */
   });
 };
 
@@ -84,7 +101,7 @@ function rework() {
       Posts.bulkWrite(docs.map((obj) => {
         let fixed;
         try {
-          // fixed = fixTimestamps(obj); // @FIXME: DONE!
+          fixed = fixTimestamps(obj); // @FIXME: DONE!
           fixed = fixSlug(obj); // @FIXME: DONE!
         } catch(err) {
           console.error(err);
