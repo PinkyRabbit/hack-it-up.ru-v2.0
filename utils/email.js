@@ -2,7 +2,7 @@
 
 const nodemailer = require('nodemailer');
 
-const smtpTransport = nodemailer.createTransport('SMTP', {
+const smtpTransport = nodemailer.createTransport({
   service: 'Mail.ru',
   auth: {
     user: process.env.EMAIL_DELIVERY_EMAIL,
