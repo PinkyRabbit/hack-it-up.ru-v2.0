@@ -10,7 +10,8 @@ const transportOps = {
     pass: process.env.EMAIL_DELIVERY_PASSWORD,
   },
   pool: true,
-  host: 'smtp.hack-it-up.ru',
+  host: 'smtp.mail.ru',
+  hostname: 'hack-it-up.ru',
   port: 465,
   secure: true,
   tls: {
