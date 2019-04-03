@@ -12,6 +12,10 @@ const smtpTransport = nodemailer.createTransport({
     user: process.env.EMAIL_DELIVERY_EMAIL,
     pass: process.env.EMAIL_DELIVERY_PASSWORD,
   },
+  tls: {
+    // do not fail on invalid certs
+    rejectUnauthorized: false,
+  },
 });
 
 const mailOptions = { from: `Hello World <${process.env.EMAIL_DELIVERY_EMAIL}>` };
@@ -30,7 +34,7 @@ const sendMail = ({ to, subject, text }) => {
     mailOptions.subject = subject;
     mailOptions.text = text;
     mailOptions.html = toHtml(text);
-    console.log(mailOptions);
+
     smtpTransport.sendMail(mailOptions, (error, response) => {
       if (error) return reject(error);
       console.log(response);
