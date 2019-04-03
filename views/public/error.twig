@@ -32,6 +32,7 @@
   </div>
 
   <form method="post" action="/send-err">
+    <input type="hidden" value={{ csrf }} name="_csrf">
     <div class="form-group">
       <label for="title" class="control-label">Представьтесь, пожалуйста:</label>
       <div class="input-group">

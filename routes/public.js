@@ -6,7 +6,7 @@ const Categories = require('../db/cats');
 const router = express.Router();
 
 const recaptcha           = require('../utils/recaptcha');
-const { loginValidation } = require('../utils/validators');
+const { emailValidation } = require('../utils/validators');
 const PublicController    = require('../controllers/public.controller');
 const PagesController     = require('../controllers/pages.controller');
 
@@ -32,9 +32,9 @@ router.get('/about-me', PagesController.me);
 router.get('/category/:slug', PublicController.category.get);
 router.get('/tag/:slug', PublicController.tag.get);
 router.get('/login', PublicController.login.get);
-router.post('/login', recaptcha, loginValidation, PublicController.login.post);
+router.post('/login', recaptcha, emailValidation, PublicController.login.post);
 router.get('/search/:q', PublicController.search);
-router.post('/send-err', PublicController.error);
+router.post('/send-err', emailValidation, PublicController.error);
 router.get('/', globals, PublicController.home);
 
 module.exports = router;

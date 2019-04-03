@@ -4,6 +4,7 @@ const moment               = require('moment');
 const passport             = require('passport');
 const { validationResult } = require('express-validator/check');
 const { valErr }           = require('../utils/common');
+const email                = require('../utils/email');
 const Posts                = require('../db/posts');
 const Categories           = require('../db/cats');
 const Tag                  = require('../db/tags');
@@ -194,6 +195,30 @@ module.exports.tag = {
 }
 
 module.exports.error = (req, res, next) => {
-  console.log(req.body);
-  res.redirect('back');
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    req.session.validationErrors = valErr(errors);
+    return res.redirect('back');
+  }
+
+  if (req.body.body.length < 10) return res.redirect('back');
+
+  const {
+    name,
+    email,
+    body,
+  } = req.body;
+
+  const obj = {
+    to: process.env.ADMIN_EMAIL,
+    subject: 'Ошибка, которую нашёл пользователь сайта',
+    text: `От ${name}<${email}>\n\n${body}`
+  };
+
+  email(obj)
+    .then(() => {
+      req.flash('success', '<strong>Спасибо!</strong> Ваше сообщение успешно отправлено администрации сайта.');
+      res.redirect('/');
+    })
+    .catch(err => next(err));
 }

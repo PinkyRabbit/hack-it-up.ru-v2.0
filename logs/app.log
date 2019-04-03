@@ -2,3 +2,16 @@
 [2019-04-03T10:20:25.320] [DEBUG] prod - Server listening on port 3000
 [2019-04-03T10:22:17.470] [DEBUG] prod - Server listening on port 3000
 [2019-04-03T10:28:20.204] [DEBUG] prod - Server listening on port 3000
+[2019-04-03T10:34:14.053] [DEBUG] prod - Server listening on port 3000
+[2019-04-03T10:34:27.206] [WARN] prod - /asdfklasdf [404] -> Страница не существует
+[2019-04-03T10:34:31.556] [WARN] prod - /send-err [403] -> invalid csrf token
+[2019-04-03T10:36:09.689] [DEBUG] prod - Server listening on port 3000
+[2019-04-03T10:36:15.794] [WARN] prod - /send-err [403] -> invalid csrf token
+[2019-04-03T10:36:19.803] [WARN] prod - /send-err [404] -> Страница не существует
+[2019-04-03T10:37:14.479] [WARN] prod - /send-err [404] -> Страница не существует
+[2019-04-03T10:37:18.626] [WARN] prod - /send-err [404] -> Страница не существует
+[2019-04-03T10:37:34.255] [DEBUG] prod - Server listening on port 3000
+[2019-04-03T10:37:38.430] [WARN] prod - /send-err [404] -> Страница не существует
+[2019-04-03T10:38:50.943] [DEBUG] prod - Server listening on port 3000
+[2019-04-03T10:38:54.808] [WARN] prod - /send-err [404] -> Страница не существует
+[2019-04-03T10:39:07.810] [WARN] prod - /send-err [404] -> Страница не существует
