@@ -14,8 +14,6 @@ const transportOps = {
   // secure: true,
 };
 
-console.log(transportOps);
-
 const smtpTransport = nodemailer.createTransport(transportOps);
 
 const mailOptions = { from: `Hello World <${process.env.EMAIL_DELIVERY_EMAIL}>` };

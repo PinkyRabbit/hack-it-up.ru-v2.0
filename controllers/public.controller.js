@@ -212,7 +212,7 @@ module.exports.error = (req, res, next) => {
   const obj = {
     to: process.env.ADMIN_EMAIL,
     subject: 'Ошибка, которую нашёл пользователь сайта',
-    text: `От ${name}<${email}>\n\n${body}`
+    text: `От ${name} <${email}>\n\n${body}`
   };
 
   sendMail(obj)

@@ -4,6 +4,8 @@ const logger = require('./logger');
 
 module.exports = (err, req, res, next) => { // eslint-disable-line
   res.locals.csrf = req.csrfToken();
+  res.locals.scripts = {};
+  res.locals.scripts.costume = 'https://www.google.com/recaptcha/api.js';
 
   const errObj = {};
   // if (req.user) errObj.stack = err.stack; @FIXME: 
