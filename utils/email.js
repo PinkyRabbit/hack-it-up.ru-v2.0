@@ -3,7 +3,11 @@
 const nodemailer = require('nodemailer');
 
 const smtpTransport = nodemailer.createTransport({
-  service: 'Mail.ru',
+  // service: 'Mail.ru',
+  pool: true,
+  host: 'smtp.hack-it-up.ru',
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.EMAIL_DELIVERY_EMAIL,
     pass: process.env.EMAIL_DELIVERY_PASSWORD,
