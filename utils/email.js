@@ -4,6 +4,7 @@ const nodemailer = require('nodemailer');
 
 const transportOps = {
   service: 'Mail.ru',
+  from: `"Сайт hack-it-up" <${process.env.EMAIL_DELIVERY_EMAIL}>`,
   auth: {
     user: process.env.EMAIL_DELIVERY_EMAIL,
     pass: process.env.EMAIL_DELIVERY_PASSWORD,
