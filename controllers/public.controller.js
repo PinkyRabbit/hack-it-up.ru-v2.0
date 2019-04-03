@@ -192,3 +192,8 @@ module.exports.tag = {
     return res.render('public/posts', { posts, pagination: p.pagination });
   }
 }
+
+module.exports.error = (req, res, next) => {
+  console.log(req.body);
+  res.redirect('back');
+}

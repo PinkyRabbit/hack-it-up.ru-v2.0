@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
+const MemoryStore = require('memorystore')(session);
 
 const RESAVE = !(process.env.NODE_ENV === 'production');
 
@@ -19,6 +20,10 @@ module.exports = (app) => {
       secure: 'auto',
       sameSite: true,
     },
+    store: new MemoryStore({
+      checkPeriod: 43200000,
+    }),
   }));
   app.use(cookieParser());
 };
+

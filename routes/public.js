@@ -34,6 +34,7 @@ router.get('/tag/:slug', PublicController.tag.get);
 router.get('/login', PublicController.login.get);
 router.post('/login', recaptcha, loginValidation, PublicController.login.post);
 router.get('/search/:q', PublicController.search);
+router.post('/send-err', PublicController.error);
 router.get('/', globals, PublicController.home);
 
 module.exports = router;
