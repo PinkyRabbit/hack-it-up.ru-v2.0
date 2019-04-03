@@ -7,13 +7,17 @@ module.exports = (err, req, res, next) => { // eslint-disable-line
   res.locals.scripts = {};
   res.locals.scripts.costume = 'https://www.google.com/recaptcha/api.js';
 
-  const errObj = {};
-  // if (req.user) errObj.stack = err.stack; @FIXME: 
-  errObj.stack = err.stack;
-  errObj.status = err.status || err.errorCode || 502;
-  errObj.message = err.message || '';
-  if (req.originalUrl.indexOf('/!') === 0) errObj.status = 400;
-  if (errObj.status === 400) errObj.message = 'The request cannot be fulfilled due to bad syntax.';
+  const errObj = {
+    status: 404,
+  };
+
+  if (process.env.NODE_ENV !== 'production') {
+    errObj.stack = err.stack;
+    errObj.status = err.status || err.errorCode || 502;
+    errObj.message = err.message || '';
+    if (req.originalUrl.indexOf('/!') === 0) errObj.status = 400;
+    if (errObj.status === 400) errObj.message = 'The request cannot be fulfilled due to bad syntax.';
+  }
 
   // Отправляю хедер
   res.locals.seo = {
