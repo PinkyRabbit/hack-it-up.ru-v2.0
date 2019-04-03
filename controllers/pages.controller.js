@@ -2,6 +2,7 @@
 
 const fs                   = require('fs');
 const path                 = require('path');
+const moment               = require('moment');
 const { markdown }         = require('markdown');
 const { validationResult } = require('express-validator/check');
 const { valErr }           = require('../utils/common');
@@ -13,6 +14,9 @@ const Tags       = require('../db/tags');
 
 module.exports.article = {
   get: (req, res, next) => {
+    res.locals.scripts = {};
+    res.locals.scripts.costume = 'https://www.google.com/recaptcha/api.js';
+
     if (!req.params || !req.params.slug) return next();
     let p;
     return Posts.findBySlug(req.params.slug)
@@ -98,4 +102,23 @@ module.exports.subscribe = (req, res, next) => {
       res.redirect('back');
     });
   });
-}
+};
+
+module.exports.comment = (req, res, next) => {
+  if (req.body.body > 300) {
+    req.flash('info', 'Длинные комментарии были отключены - защита от спама');
+    return res.redirect('back');
+  }
+
+  const comment = {
+    date: moment().format('lll'),
+    author: req.body.name,
+    text: req.body.body,
+  };
+  return Posts.addComment(req.params.id, comment)
+    .then(() => {
+      req.flash('success', 'Ваш комментарий был успешно добавлен!');
+      res.redirect('back');
+    })
+    .catch(err => next(err));
+};

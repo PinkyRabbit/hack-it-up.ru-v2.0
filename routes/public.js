@@ -46,6 +46,7 @@ router.post('/login', recaptcha, emailValidation, PublicController.login.post);
 router.get('/search/:q', PublicController.search);
 router.post('/send-err', recaptcha, emailValidation, PublicController.error);
 router.post('/subscribe', emailValidation, PagesController.subscribe);
+router.post('/comment/:id', recaptcha, PagesController.comment);
 router.get('/', globals, PublicController.home);
 
 module.exports = router;

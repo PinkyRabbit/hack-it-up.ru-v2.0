@@ -76,3 +76,6 @@ module.exports.search = (re) => {
     ],
   });
 };
+
+module.exports.addComment = (_id, comment) => Posts
+  .update({ _id }, { $push: { comments: comment } });
