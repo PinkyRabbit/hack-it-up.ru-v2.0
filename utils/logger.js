@@ -5,7 +5,17 @@ require('dotenv').config();
 const log4js = require('log4js');
 const path = require('path');
 
+const { transportOps } = require('./email');
+
 const FILENAME = path.resolve(__dirname, '../logs/app.log');
+
+const email = {
+  ...transportOps,
+  recipients: process.env.ADMIN_EMAIL,
+  sender: `"Сайт hack-it-up" <${process.env.EMAIL_DELIVERY_EMAIL}>`,
+  subject: 'Ошибка на сайте',
+  type: '@log4js-node/smtp',
+}
 
 log4js.configure({
   appenders: {
@@ -13,23 +23,7 @@ log4js.configure({
       type: 'stdout',
     },
     toFile: { type: 'file', filename: FILENAME },
-    email: {
-      type: '@log4js-node/smtp',
-      recipients: process.env.ADMIN_EMAIL,
-      transport: 'SMTP',
-      SMTP: {
-        pool: true,
-        host: 'smtp.hack-it-up.ru',
-        port: 465,
-        secure: true,
-        sender: `"Сайт hack-it-up" <${process.env.EMAIL_DELIVERY_EMAIL}>`,
-        subject: 'Ошибка на сайте',
-        auth: {
-          user: process.env.EMAIL_DELIVERY_EMAIL,
-          pass: process.env.EMAIL_DELIVERY_PASSWORD,
-        },
-      },
-    },
+    email,
   },
   categories: {
     default: {

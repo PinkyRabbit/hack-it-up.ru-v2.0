@@ -2,21 +2,22 @@
 
 const nodemailer = require('nodemailer');
 
-const smtpTransport = nodemailer.createTransport({
-  // service: 'Mail.ru',
-  pool: true,
-  host: 'smtp.hack-it-up.ru',
-  port: 465,
-  secure: true,
+const transportOps = {
+  service: 'Mail.ru',
   auth: {
     user: process.env.EMAIL_DELIVERY_EMAIL,
     pass: process.env.EMAIL_DELIVERY_PASSWORD,
   },
-  tls: {
-    // do not fail on invalid certs
-    rejectUnauthorized: false,
-  },
-});
+  // pool: true,
+  // host: 'smtp.mail.ru',
+  // port: 465,
+  // secure: true,
+  // tls: {
+  //   rejectUnauthorized: false,
+  // },
+};
+
+const smtpTransport = nodemailer.createTransport(transportOps);
 
 const mailOptions = { from: `Hello World <${process.env.EMAIL_DELIVERY_EMAIL}>` };
 
@@ -45,6 +46,6 @@ const sendMail = ({ to, subject, text }) => {
 };
 
 module.exports = {
-  smtpTransport,
+  transportOps,
   sendMail,
 };
