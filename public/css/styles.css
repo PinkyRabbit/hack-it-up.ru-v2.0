@@ -10,6 +10,11 @@ header{
 aside{
   margin-bottom: 20px;
 }
+aside .list-group a {
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
+}
 footer{
   text-align: center;
   background-color: #40043d;

@@ -7,3 +7,4 @@ module.exports.insert = val => Tags.insert(val);
 module.exports.findByNames = names => Tags.find({ name: { $in: names } });
 module.exports.bySlug = slug => Tags.findOne({ url: slug });
 module.exports.delete = name => Tags.remove({ name });
+module.exports.getFive = () => Tags.aggregate([{ $sample: { size: 5 } }]);

@@ -26,4 +26,16 @@
       e.preventDefault();
     });
   });
+
+  var subemail = $('#subemail');
+  if (subemail && subemail.length) {
+    subemail.keypress(function (e) {
+      var key = e.which;
+      if(key == 13)  // the enter key code
+        {
+          $('#subform').submit();
+          return false;  
+        }
+      });   
+  }
 }());

@@ -58,7 +58,6 @@ module.exports.login = {
       description: 'Страничка входа =) Только нафиг она вам сдалась-то?',
     };
 
-    res.locals.csrf = req.csrfToken();
     return res.render('public/login');
   },
   post: (req, res, next) => {

@@ -52,6 +52,24 @@
               {% block bodyblock %}{% endblock %}
             </div>
             <aside class="col-xs-12 col-sm-3">
+              <!-- subscribe -->
+              <h4>Подпишись:</h4>
+              <form method="post" action="/subscribe" id="subform">
+                <input type="hidden" value={{ csrf }} name="_csrf">
+                <div class="form-group">
+                  <input type="email" name="email" class="form-control" id="subemail" placeholder="Ваш email...">
+                </div>
+              </form>
+              <!-- subscribe -->
+
+              <!-- tags -->
+              <div class="list-group">
+                <h4>Случайные теги:</h4>
+                {% for atag in asidetags %}
+                  <a href="/tag/{{ atag.url }}" class="list-group-item">{{ atag.name }}</a>
+                {% endfor %}
+              </div>
+              <!-- /tags -->
 
               <!-- twitter -->
               <a class="twitter-timeline"
