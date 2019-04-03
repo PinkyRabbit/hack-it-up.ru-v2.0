@@ -142,8 +142,7 @@ module.exports.category = {
     }
 
     const p = await Posts.getAllNews(page, { category: cat.name }, `/category/${slug}`);
-    console.log('Posts.getAllNews');
-    console.log(p.pagination);
+
     const author = {
       username: process.env.TG_USERNAME,
       url: process.env.TG_LINK,

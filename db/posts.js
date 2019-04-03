@@ -14,7 +14,7 @@ module.exports.getAllNews = (page = 1, filter = null, urlPrefix = '/') => {
     let query = { published: true };
     if (filter) query = Object.assign(query, filter);
 
-    return Posts.find({ published: true }).then((docs) => {
+    return Posts.find(query).then((docs) => {
       if (docs.length < config.posts.limit) {
         const res = docs.sort((a, b) => b.createdAt - a.createdAt);
         return resolve({ filtred: res, pagination: null });
