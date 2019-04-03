@@ -18,7 +18,7 @@ log4js.configure({
       recipients: process.env.ADMIN_EMAIL,
       transport: 'SMTP',
       SMTP: {
-        service: 'Yandex',
+        service: 'Mail.ru',
         secure: true,
         sender: `"Сайт hack-it-up" <${process.env.EMAIL_DELIVERY_EMAIL}>`,
         subject: 'Ошибка на сайте',
