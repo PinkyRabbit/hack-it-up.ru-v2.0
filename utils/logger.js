@@ -7,10 +7,6 @@ const path = require('path');
 
 const { transportOps } = require('./email');
 
-const SMTP = Object.assign(transportOps, {
-  subject: 'Ошибка на сайте',
-});
-
 const FILENAME = path.resolve(__dirname, '../logs/app.log');
 
 log4js.configure({
@@ -22,7 +18,9 @@ log4js.configure({
     email: {
       type: '@log4js-node/smtp',
       recipients: process.env.ADMIN_EMAIL,
-      transport: SMTP,
+      sender: `"Сайт hack-it-up" <${process.env.EMAIL_DELIVERY_EMAIL}>`,
+      subject: 'Ошибка на сайте',
+      transport: transportOps,
     },
   },
   categories: {
