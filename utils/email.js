@@ -13,9 +13,6 @@ const transportOps = {
   host: 'hack-it-up.ru',
   port: 465,
   secure: true,
-  tls: {
-    rejectUnauthorized: false,
-  },
 };
 
 const smtpTransport = nodemailer.createTransport(transportOps);
