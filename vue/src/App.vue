@@ -117,7 +117,7 @@ export default {
   },
   methods: {
     onSubmit(e) {
-      const body = {
+      this.article = {
         ...this.article,
         body: this.editor.getHTML(),
       };
