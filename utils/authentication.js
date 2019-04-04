@@ -1,6 +1,7 @@
 const passport      = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt        = require('bcrypt');
+const createError   = require('http-errors');
 const User          = require('../db/user');
 
 module.exports.init = () => {
@@ -32,4 +33,8 @@ module.exports.init = () => {
 };
 
 
-exports.isAuthenticated = passport.authenticate('local');
+// exports.isAuthenticated = passport.authenticate('local');
+exports.isAuthenticated = (req, res, next) => {
+  if (req.isAuthenticated()) return next();
+  return next(createError(404, 'Страница не существует'));
+};
