@@ -5,10 +5,9 @@ const express = require('express');
 const router = express.Router();
 
 const AdminController = require('../controllers/admin.controller');
+const { isAuthenticated } = require('../utils/authentication');
 
-// @TODO: СДЕЛАТЬ ПРОВЕРКУ НА АВТОРИЗАЦИЮ с 404
-
-router.get('*', (req, res, next) => {
+router.get('*', isAuthenticated, (req, res, next) => {
   res.locals.seo = {
     google: false,
     sidebar: false,
