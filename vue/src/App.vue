@@ -45,10 +45,10 @@
       >Loading...</form-image>
 
       <!-- Текст статьи -->
-      <Body
-        :body="article.body"
-        @passEditor="passEditor"
-        >Loading...</Body>
+      <Quill
+        :body = "article.body"
+        @UpdateContent="UpdateContent"
+      >Loading...</Quill>
 
       <!-- Теги -->
       <Tags
@@ -77,6 +77,7 @@ import Body from './blocks/Editor.vue';
 import Tags from './blocks/Tags.vue';
 import Image from './blocks/Image.vue';
 import RealForm from './blocks/RealForm.vue';
+import Quill from './blocks/Quill.vue';
 
 export default {
   name: 'app',
@@ -91,6 +92,7 @@ export default {
     Tags,
     'form-image': Image,
     RealForm,
+    Quill
   },
   data: function () {
     return {
@@ -117,18 +119,18 @@ export default {
   },
   methods: {
     onSubmit(e) {
-      this.article = {
-        ...this.article,
-        body: this.editor.getHTML(),
-      };
+      // this.article = {
+      //   ...this.article,
+      //   body: this.editor.container.firstChild.innerHTML,
+      // };
 
       document.getElementById('realform').submit();
     },
     autoUpdate() {
-      const body = {
-        ...this.article,
-        body: this.editor.getHTML(),
-      };
+      // const body = {
+      //   ...this.article,
+      //   body: this.editor.container.firstChild.innerHTML,
+      // };
 
       const url = '/admin/edit/' + this.article._id + '?_csrf=' + this.article._csrf;
       this.$http.put(url, body)
@@ -163,8 +165,8 @@ export default {
       arr.splice(index, 1);
       this.article.tags = arr;
     },
-    passEditor(editor) {
-      this.editor = editor;
+    UpdateContent(html) {
+      this.article.body = html;
     }
   },
   mounted() {
@@ -187,9 +189,6 @@ export default {
     setInterval(() => {
       this.autoUpdate();
     }, 30000);
-  },
-  beforeDestroy() {
-    this.editor.destroy()
   },
 }
 </script>
