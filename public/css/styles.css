@@ -26,10 +26,7 @@ thead{
   color: #c5005d;
 }
 article{
-  font-size: 1.2em;
-}
-article p{
-  text-indent: 10px;
+  font-size: 1em;
 }
 article .embed-responsive{
   margin-bottom: 10px;

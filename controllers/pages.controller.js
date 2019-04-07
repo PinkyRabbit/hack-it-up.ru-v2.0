@@ -38,6 +38,7 @@ module.exports.article = {
         };
 
         p = Object.assign({}, post);
+        p.body = p.body.replace(/(<img.*)?>/, '$1 class="img-responsive">');
 
         let cats = [];
         let tags = [];
