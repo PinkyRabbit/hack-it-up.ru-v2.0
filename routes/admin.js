@@ -7,8 +7,8 @@ const router = express.Router();
 const AdminController = require('../controllers/admin.controller');
 const { isAuthenticated } = require('../utils/authentication');
 
-// router.get('*', isAuthenticated, (req, res, next) => {
-router.get('*', (req, res, next) => {
+// router.get('*', (req, res, next) => {
+router.get('*', isAuthenticated, (req, res, next) => {
   res.locals.seo = {
     google: false,
     sidebar: false,
