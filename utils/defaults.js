@@ -1,7 +1,3 @@
-'use strict';
-
-require('dotenv').config();
-
 const bcrypt = require('bcrypt');
 const logger = require('./logger');
 const User   = require('../db/user');

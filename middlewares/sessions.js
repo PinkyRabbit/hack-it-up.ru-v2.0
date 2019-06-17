@@ -1,7 +1,5 @@
 'use strict';
 
-require('dotenv').config();
-
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const MemoryStore = require('memorystore')(session);

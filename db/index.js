@@ -1,8 +1,4 @@
-'use strict';
-
 /* eslint-disable prefer-template */
-require('dotenv').config();
-
 const monk = require('monk');
 
 // Connection URL
