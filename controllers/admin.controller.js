@@ -109,6 +109,10 @@ module.exports.edit = {
       ? req.body.tags
       : req.body.tags.split(',');
 
+    // const article = /<code>/.test(req.body.body)
+    //   ? 
+    console.log(req.body.body);
+
     const update = {
       body: req.body.body,
       category: req.body.category,

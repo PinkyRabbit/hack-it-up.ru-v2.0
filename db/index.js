@@ -7,7 +7,7 @@ const url = [
     ? process.env.DB_USER + ':' + process.env.DB_PASSWORD + '@'
     : '',
   process.env.BASE_DOMAIN + ':27017',
-  '/' + process.env.DB,
+  process.env.NODE_ENV === 'test' ? '/test' : '/' + process.env.DB,
 ].join('');
 
 const db = monk(url);

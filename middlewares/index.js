@@ -1,15 +1,13 @@
-'use strict';
-
 const path       = require('path');
 const helmet     = require('helmet');
 const favicon    = require('serve-favicon');
 const csrf       = require('csurf');
 const flash      = require('connect-flash');
 const bodyParser = require('body-parser');
-const passport    = require('passport');
+const passport   = require('passport');
+const morgan     = require('morgan');
 
 const sessions    = require('./sessions');
-const twitter     = require('./twitter');
 const makeFlash   = require('./flash');
 const compression = require('./compression');
 
@@ -28,11 +26,14 @@ module.exports = (app) => {
   app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
   app.use(bodyParser.json());
 
+  if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));
+  }
+
   // session
   sessions(app);
 
   // passport
-
   app.use(passport.initialize());
   app.use(passport.session());
 
@@ -43,6 +44,4 @@ module.exports = (app) => {
 
   app.use(flash());
   app.get('*', makeFlash);
-
-  // twitter(app); //@NOTE: не понадобилось
 };

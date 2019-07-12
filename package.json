@@ -6,7 +6,8 @@
     "start": "NODE_ENV=production node ./bin/www",
     "nodemon": "NODE_ENV=development nodemon ./bin/www",
     "vue": "NODE_ENV=development VUE=development nodemon ./bin/www",
-    "lint": "node_modules/.bin/eslint ./app/**/*.js"
+    "lint": "node_modules/.bin/eslint ./app/**/*.js",
+    "test": "NODE_ENV=test mocha --recursive"
   },
   "husky": {
     "hooks": {
@@ -39,6 +40,7 @@
     "memorystore": "^1.6.1",
     "moment": "^2.24.0",
     "monk": "^7.0.0",
+    "morgan": "^1.9.1",
     "multer": "^1.4.1",
     "node-base64-image": "^1.0.6",
     "nodemailer": "^6.2.1",
@@ -51,10 +53,13 @@
     "twitter": "^1.7.1"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
     "eslint": "5.3.0",
     "eslint-config-airbnb-base": "13.1.0",
     "eslint-plugin-import": "^2.14.0",
     "husky": "^2.4.1",
-    "lint-staged": "^8.2.1"
+    "lint-staged": "^8.2.1",
+    "mocha": "^6.1.4",
+    "supertest": "^4.0.2"
   }
 }

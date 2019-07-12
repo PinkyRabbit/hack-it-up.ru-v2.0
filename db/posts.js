@@ -7,8 +7,13 @@ const getPagination = require('../utils/pagination');
 const Posts         = require('./index').get('posts');
 
 // get all posts
-module.exports.getAll = () => Posts.find({});
+module.exports.getAll = filters => Posts.find(filters);
+module.exports.findById = _id => Posts.findOne({ _id });
 
+// @TODO: need work
+module.exports.getAllWithPagination = filters => Posts.find(filters);
+
+// @FIXME: need to rework:
 module.exports.getAllNews = (page = 1, filter = null, urlPrefix = '/') => {
   return new Promise((resolve, reject) => {
     let query = { published: true };
@@ -40,7 +45,7 @@ module.exports.getAllNews = (page = 1, filter = null, urlPrefix = '/') => {
 };
 
 module.exports.findBySlug = slug => Posts.findOne({ slug });
-module.exports.findById = _id => Posts.findOne({ _id });
+
 module.exports.makeUnpublished = _id => Posts.update({ _id }, { $set: { published: false } });
 module.exports.publish = _id => Posts.update({ _id }, { $set: { published: true } });
 module.exports.findUnpublished = () => Posts.find({ published: false });

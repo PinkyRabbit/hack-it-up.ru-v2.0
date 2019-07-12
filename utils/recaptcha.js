@@ -1,15 +1,17 @@
-'use strict';
-
 const https         = require('https');
 const logger        = require('./logger');
 const { recaptcha } = require('../config');
 
 module.exports = (req, res, next) => {
+  if (process.env.NODE_ENV === 'development') {
+    return next();
+  }
+
   const recaptchaResp = req.body['g-recaptcha-response'];
 
   if (recaptchaResp) {
     const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${recaptcha}&response=${recaptchaResp}&remoteip=${req.ip}`;
-    https.get(verifyUrl, (resp) => {
+    return https.get(verifyUrl, (resp) => {
       let data = '';
 
       resp.on('data', (chunk) => {
@@ -30,8 +32,7 @@ module.exports = (req, res, next) => {
       logger.debug(err);
       res.status(401).redirect('back');
     });
-  } else {
-    req.flash('danger', 'Капча не введена! Вы же не робот?');
-    res.redirect('back');
   }
+  req.flash('danger', 'Капча не введена! Вы же не робот?');
+  return res.redirect('back');
 };

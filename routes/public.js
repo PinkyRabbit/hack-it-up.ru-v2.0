@@ -8,6 +8,8 @@ const router = express.Router();
 
 const recaptcha           = require('../utils/recaptcha');
 const { emailValidation } = require('../utils/validators');
+const Articles            = require('../controllers/articles');
+
 const PublicController    = require('../controllers/public.controller');
 const PagesController     = require('../controllers/pages.controller');
 
@@ -47,6 +49,24 @@ router.get('/search/:q', PublicController.search);
 router.post('/send-err', recaptcha, emailValidation, PublicController.error);
 router.post('/subscribe', emailValidation, PagesController.subscribe);
 router.post('/comment/:id', recaptcha, PagesController.comment);
-router.get('/', globals, PublicController.home);
+router.get('/', globals, home);
+
+async function home(req, res) {
+  res.locals.seo = {
+    google: true,
+    sidebar: true,
+    title: 'Главная',
+    h1: 'Hello world!',
+    keywords: 'developer, примеры, nodejs, учить',
+    image: 'standart/main.jpg',
+    description: 'Этот блог родился, когда я делал первые шаги в NodeJS. В нём я публикую свои мысли и заметки про программирование и лучше писать код.',
+  };
+
+  const { query } = req;
+
+  const articles = Articles.getAll(query);
+
+  return res.render('public/posts', articles);
+}
 
 module.exports = router;

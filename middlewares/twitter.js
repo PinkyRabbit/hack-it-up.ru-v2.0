@@ -1,5 +1,3 @@
-'use strict';
-
 const Twitter = require('twitter');
 const logger  = require('../utils/logger');
 const config  = require('../config');

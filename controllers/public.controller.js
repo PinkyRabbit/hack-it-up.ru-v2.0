@@ -69,6 +69,7 @@ module.exports.login = {
 
     return passport.authenticate('local', (err, user, msg) => {
       if (err) return next(err);
+      console.log(err);
       if (msg) {
         req.flash('info', msg.message);
         return res.redirect('back');

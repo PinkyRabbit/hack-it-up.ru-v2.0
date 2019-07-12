@@ -11,9 +11,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 initMiddlewares(app);
 
-db.then(() => {
+app.start = async () => {
+  await db();
   initRoutes(app);
   initDefaults();
-});
+};
+
+if (process.env.NODE_ENV !== 'test') app.start();
 
 module.exports = app;

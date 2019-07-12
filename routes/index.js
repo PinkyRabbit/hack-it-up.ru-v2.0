@@ -1,5 +1,3 @@
-'use strict';
-
 const createError  = require('http-errors');
 const errorHandler = require('../utils/error_handler');
 
