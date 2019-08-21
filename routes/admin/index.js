@@ -1,11 +1,18 @@
-const adminArticleRoute = require('./article');
-const adminTagsRoute = require('./tags');
-const adminCategoryRoute = require('./category');
-const adminCommentRoute = require('./comment');
+const express = require('express');
 
-module.exports = (app) => {
-  app.use('/article', adminArticleRoute);
-  app.use('/tags', adminTagsRoute);
-  app.use('/categories', adminCategoryRoute);
-  app.use('/comments', adminCommentRoute);
-};
+const { isAuthenticated } = require('../../utils/authentication');
+const adminArticleRoute = require('./article');
+// const adminTagsRoute = require('./tags');
+// const adminCategoryRoute = require('./category');
+// const adminCommentRoute = require('./comment');
+
+const adminRouter = express.Router();
+
+adminRouter
+  .use('*', isAuthenticated)
+  .use('/article', adminArticleRoute);
+  // .use('/tags', adminArticleRoute)
+  // .use('/categories', adminArticleRoute)
+  // .use('/comments', adminArticleRoute);
+
+module.exports = adminRouter;

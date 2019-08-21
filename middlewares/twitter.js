@@ -12,8 +12,7 @@ const client = new Twitter({
 module.exports = (app) => {
   app.get('*', async (req, res, next) => {
     try {
-      const twits = await client.get('statuses/user_timeline', { count: 5 });
-      console.log(twits);
+      await client.get('statuses/user_timeline', { count: 5 });
     } catch (err) {
       logger.error(err);
     }

@@ -19,11 +19,9 @@ module.exports.translit = (str) => {
 };
 
 // отдаём ошибки в виде массива
-module.exports.valErr = (errs) => {
+module.exports.mapValidationErrorsForFlash = (errs) => {
   const validationErrors = errs.mapped();
   return Object
     .keys(validationErrors)
-    .map((key) => {
-      return validationErrors[key].msg;
-    });
+    .map(key => validationErrors[key].msg);
 };

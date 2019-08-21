@@ -5,7 +5,9 @@ const createError   = require('http-errors');
 
 const { User } = require('../db');
 
-module.exports.init = () => {
+const ENV = process.env.NODE_ENV;
+
+const init = () => {
   passport.serializeUser((user, done) => {
     done(null, user._id);
   });
@@ -33,9 +35,12 @@ module.exports.init = () => {
   ));
 };
 
-
-// exports.isAuthenticated = passport.authenticate('local');
-exports.isAuthenticated = (req, res, next) => {
-  if (req.isAuthenticated()) return next();
+const isAuthenticated = (req, res, next) => {
+  if (req.isAuthenticated() || ENV === 'development') return next();
   return next(createError(404, 'Страница не существует'));
+};
+
+module.exports = {
+  init,
+  isAuthenticated,
 };

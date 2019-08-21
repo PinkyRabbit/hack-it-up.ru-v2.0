@@ -4,7 +4,6 @@ const express         = require('express');
 require('./db');
 const initMiddlewares = require('./middlewares');
 const initRoutes      = require('./routes');
-// const initDefaults    = require('./utils/defaults'); @FIXME: убрать
 
 const app = express();
 

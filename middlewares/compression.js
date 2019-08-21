@@ -1,5 +1,3 @@
-'use strict';
-
 const compression = require('compression');
 
 function shouldCompress(req, res) {

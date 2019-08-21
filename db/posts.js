@@ -1,9 +1,26 @@
-const createError   = require('http-errors');
+// const createError   = require('http-errors');
 const moment        = require('moment');
 
-const config        = require('../config');
-const getPagination = require('../utils/pagination');
-const { Posts }            = require('../db');
+const { Post }     = require('../db');
+// const config        = require('../config');
+// const getPagination = require('../utils/pagination');
+
+const PostsQuery = {
+  new: () => {
+    const date = new Date();
+    return Post.insert({
+      dateurl: moment(date).format('MM-YYYY'),
+      published: false,
+      createdAt: date,
+      updatedAt: date,
+    });
+  },
+  getById: _id => Post.findOne({ _id }),
+};
+
+module.exports = PostsQuery;
+/*
+
 
 // get all posts
 module.exports.getAll = filters => Posts.find(filters);
@@ -79,3 +96,4 @@ module.exports.search = re => Posts.find({
 
 module.exports.addComment = (_id, comment) => Posts
   .update({ _id }, { $push: { comments: comment } });
+*/
