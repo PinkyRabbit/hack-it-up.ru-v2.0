@@ -1,5 +1,3 @@
-'use strict';
-
 const transliteration = require('transliteration.cyr');
 
 module.exports.createSlug = (str) => {

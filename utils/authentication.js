@@ -2,7 +2,8 @@ const passport      = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt        = require('bcrypt');
 const createError   = require('http-errors');
-const User          = require('../db/user');
+
+const { User } = require('../db');
 
 module.exports.init = () => {
   passport.serializeUser((user, done) => {

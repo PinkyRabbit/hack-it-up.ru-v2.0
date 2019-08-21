@@ -1,5 +1,3 @@
-'use strict';
-
 /* eslint-disable prefer-template */
 module.exports = (docs, page, limit, path) => {
   const pages = Math.ceil(docs.length / limit);

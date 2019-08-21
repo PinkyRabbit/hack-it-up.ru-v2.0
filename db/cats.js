@@ -1,16 +1,14 @@
-'use strict';
-
-const Cats = require('./index').get('categories');
+const { Category } = require('../db');
 const { createSlug } = require('../utils/common');
 
-module.exports.getAll = () => Cats.find({ name: { $ne: '' } });
-module.exports.getNames = () => Cats.find({ name: { $ne: '' } }, { name: 1 });
-module.exports.bySlug = slug => Cats.findOne({ url: slug });
-module.exports.byName = name => Cats.findOne({ name });
-module.exports.delete = name => Cats.remove({ name });
+module.exports.getAll = () => Category().find({ name: { $ne: '' } });
+module.exports.getNames = () => Category().find({ name: { $ne: '' } }, { name: 1 });
+module.exports.bySlug = slug => Category().findOne({ url: slug });
+module.exports.byName = name => Category().findOne({ name });
+module.exports.delete = name => Category().remove({ name });
 module.exports.createNew = (name) => {
   const date = new Date();
-  return Cats.update(
+  return Category().update(
     { name }, {
       $setOnInsert: {
         name,

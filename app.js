@@ -1,22 +1,16 @@
 const path            = require('path');
 const express         = require('express');
-const initRoutes      = require('./routes');
+
+require('./db');
 const initMiddlewares = require('./middlewares');
-const initDefaults    = require('./utils/defaults');
-const db              = require('./db');
+const initRoutes      = require('./routes');
+// const initDefaults    = require('./utils/defaults'); @FIXME: убрать
 
 const app = express();
 
 app.use(express.static(path.join(__dirname, 'public')));
 
 initMiddlewares(app);
-
-app.start = async () => {
-  await db();
-  initRoutes(app);
-  initDefaults();
-};
-
-if (process.env.NODE_ENV !== 'test') app.start();
+initRoutes(app);
 
 module.exports = app;

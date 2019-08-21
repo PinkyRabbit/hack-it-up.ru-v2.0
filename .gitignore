@@ -6,3 +6,7 @@ node_modules/
 .vscode/
 subscribers.txt
 public/images/uploads/*.*
+old/
+configs/
+test/
+*.log

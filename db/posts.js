@@ -1,10 +1,9 @@
-'use strict';
-
 const createError   = require('http-errors');
 const moment        = require('moment');
+
 const config        = require('../config');
 const getPagination = require('../utils/pagination');
-const Posts         = require('./index').get('posts');
+const { Posts }            = require('../db');
 
 // get all posts
 module.exports.getAll = filters => Posts.find(filters);
@@ -37,9 +36,7 @@ module.exports.getAllNews = (page = 1, filter = null, urlPrefix = '/') => {
         skip: (page - 1) * config.posts.limit,
         limit: config.posts.limit,
       })
-        .then((filtred) => {
-          return resolve({ filtred, pagination });
-        });
+        .then(filtred => resolve({ filtred, pagination }));
     });
   });
 };
@@ -66,21 +63,19 @@ module.exports.createNew = (user) => {
   });
 };
 
-module.exports.search = (re) => {
-  return Posts.find({
-    $and: [
-      { published: true },
-      {
-        $or: [
-          { h1: { $regex: re, $options: 'i' } },
-          { title: { $regex: re, $options: 'i' } },
-          { description: { $regex: re, $options: 'i' } },
-          { keywords: { $regex: re, $options: 'i' } },
-        ],
-      },
-    ],
-  });
-};
+module.exports.search = re => Posts.find({
+  $and: [
+    { published: true },
+    {
+      $or: [
+        { h1: { $regex: re, $options: 'i' } },
+        { title: { $regex: re, $options: 'i' } },
+        { description: { $regex: re, $options: 'i' } },
+        { keywords: { $regex: re, $options: 'i' } },
+      ],
+    },
+  ],
+});
 
 module.exports.addComment = (_id, comment) => Posts
   .update({ _id }, { $push: { comments: comment } });

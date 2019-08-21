@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = (req, res, next) => {
   const messages = [];
   // primary success danger

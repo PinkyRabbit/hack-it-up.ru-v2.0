@@ -1,13 +1,13 @@
 {
   "name": "hack-it-up",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "private": true,
   "scripts": {
     "start": "NODE_ENV=production node ./bin/www",
     "nodemon": "NODE_ENV=development nodemon ./bin/www",
     "vue": "NODE_ENV=development VUE=development nodemon ./bin/www",
     "lint": "node_modules/.bin/eslint ./app/**/*.js",
-    "test": "NODE_ENV=test mocha --recursive"
+    "seed": "NODE_ENV=development node ./db/init"
   },
   "husky": {
     "hooks": {

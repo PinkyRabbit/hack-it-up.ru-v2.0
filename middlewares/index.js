@@ -29,19 +29,11 @@ module.exports = (app) => {
   if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
   }
-
-  // session
   sessions(app);
-
-  // passport
   app.use(passport.initialize());
   app.use(passport.session());
-
   app.use(csrf({ cookie: true }));
-
-  // serve static files
   app.use(favicon(path.join(__dirname, '..', 'public', 'favicon.png')));
-
   app.use(flash());
   app.get('*', makeFlash);
 };

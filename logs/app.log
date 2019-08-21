@@ -177,3 +177,23 @@
 [2019-04-04T12:10:05.487] [WARN] prod - /admin/editpost/5ca5c3e6204fe953fc2e237a [404] -> undefined
 [2019-04-04T12:18:12.498] [DEBUG] prod - Server listening on port 8888
 [2019-04-04T12:20:01.651] [DEBUG] prod - Server listening on port 8888
+[2019-08-20T23:01:33.645] [DEBUG] prod - Server listening on port 3000
+[2019-08-20T23:08:11.142] [DEBUG] prod - Server listening on port 3000
+[2019-08-20T23:08:38.204] [DEBUG] prod - Server listening on port 3000
+[2019-08-20T23:44:55.593] [DEBUG] prod - Server listening on port 3000
+[2019-08-20T23:45:39.393] [DEBUG] prod - Server listening on port 3000
+[2019-08-20T23:52:04.431] [DEBUG] prod - Server listening on port 3000
+[2019-08-21T00:02:58.693] [DEBUG] prod - Server listening on port 3000
+[2019-08-21T00:02:58.698] [FATAL] prod - failed to connect to server [127.0.0.1:27017] on first connect [MongoNetworkError: connect ECONNREFUSED 127.0.0.1:27017]
+[2019-08-21T00:32:12.682] [ERROR] prod - Error: data and salt arguments required
+    at Object.hash (/var/www/hack-it-up.ru-v2.0/node_modules/bcrypt/bcrypt.js:138:17)
+    at Object.<anonymous> (/var/www/hack-it-up.ru-v2.0/db/init/index.js:6:8)
+    at Module._compile (internal/modules/cjs/loader.js:776:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:787:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Function.Module.runMain (internal/modules/cjs/loader.js:829:12)
+    at startup (internal/bootstrap/node.js:283:19)
+    at bootstrapNodeJSCore (internal/bootstrap/node.js:622:3)
+[2019-08-21T00:32:12.899] [FATAL] prod - failed to connect to server [undefined:27017] on first connect [MongoNetworkError: getaddrinfo ENOTFOUND undefined undefined:27017]
