@@ -2,6 +2,7 @@ const express = require('express');
 
 const articleController = require('../../controllers/article');
 const { validateArticleId } = require('../validator');
+const { uploadImage } = require('../../services/multer');
 
 const adminArticleRouter = express.Router();
 
@@ -9,8 +10,9 @@ adminArticleRouter
   .get('/new', createAndRedirectToNewArticle)
   .get('/:articleId', validateArticleId, getJson)
   .get('/:articleId/edit', validateArticleId, editArticle)
-  // .put('/:articleId/edit', articlePresave)
-  // .post('/:articleId/edit', saveArticle)
+  .put('/:articleId/edit', validateArticleId, articlePresave)
+  .post('/:articleId/edit', validateArticleId, saveArticle)
+  .post('/:articleId/image', validateArticleId, uploadImage, checkUploadedImage)
   // .get('/:articleId/view', viewArticle)
   // .post('/:articleId/view', publishArticle)
   // .get('/:articleId/unpublish', unpublishArticle);
@@ -35,13 +37,26 @@ async function getJson(req, res) {
   res.json(article);
 }
 
-// async function articlePresave(req, res, next) {
-//   return next();
-// }
+async function checkUploadedImage(req, res) {
+  const { articleId } = req.params;
+  const { file } = req;
+  const fileName = await articleController.updateImage(articleId, file);
+  res.json({ fileName });
+}
 
-// async function saveArticle(req, res, next) {
-//   return next();
-// }
+async function articlePresave(req, res) {
+  const { articleId } = req.params;
+  const { body } = req;
+  const result = await articleController.updateArticle(articleId, body);
+  res.send(result);
+}
+
+async function saveArticle(req, res) {
+  const { articleId } = req.params;
+  const { body } = req;
+  await articleController.updateArticle(articleId, body);
+  res.redirect(`/admin/${articleId}/view`);
+}
 
 // async function viewArticle(req, res, next) {
 //   return next();

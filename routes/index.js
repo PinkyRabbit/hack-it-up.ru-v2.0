@@ -1,12 +1,12 @@
 const createError  = require('http-errors');
 
-// const publicRoutes   = require('./public');
+const publicRoutes   = require('./public');
 const adminRoutes = require('./admin');
 const errorHandler = require('../utils/error_handler');
 
 module.exports = (app) => {
   app.use('/admin', adminRoutes);
-  // app.use('/', publicRoutes);
+  app.use('/', publicRoutes);
 
   if (process.env.NODE_ENV === 'production') {
     app.set('trust proxy', 1);

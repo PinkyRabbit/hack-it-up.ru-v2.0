@@ -6,6 +6,8 @@ const { Post }     = require('../db');
 // const getPagination = require('../utils/pagination');
 
 const PostsQuery = {
+  getById: _id => Post.findOne({ _id }),
+  findBySlug: slug => Post.findOne({ slug }),
   new: () => {
     const date = new Date();
     return Post.insert({
@@ -15,7 +17,7 @@ const PostsQuery = {
       updatedAt: date,
     });
   },
-  getById: _id => Post.findOne({ _id }),
+  update: (_id, update) => Post.update({ _id }, { $set: update }),
 };
 
 module.exports = PostsQuery;
