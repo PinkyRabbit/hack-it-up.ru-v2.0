@@ -1,7 +1,11 @@
 const express = require('express');
 
 const articleController = require('../../controllers/article');
-const { validateArticleId } = require('../validator');
+const {
+  validateArticleId,
+  validateArticle,
+  flashErrors,
+} = require('../validator');
 const { uploadImage } = require('../../services/multer');
 
 const adminArticleRouter = express.Router();
@@ -11,9 +15,9 @@ adminArticleRouter
   .get('/:articleId', validateArticleId, getJson)
   .get('/:articleId/edit', validateArticleId, editArticle)
   .put('/:articleId/edit', validateArticleId, articlePresave)
-  .post('/:articleId/edit', validateArticleId, saveArticle)
+  .post('/:articleId/edit', validateArticleId, validateArticle, flashErrors, saveArticle)
   .post('/:articleId/image', validateArticleId, uploadImage, checkUploadedImage)
-  // .get('/:articleId/view', viewArticle)
+  .get('/:articleId/view', viewArticle)
   // .post('/:articleId/view', publishArticle)
   // .get('/:articleId/unpublish', unpublishArticle);
   ;
@@ -55,12 +59,30 @@ async function saveArticle(req, res) {
   const { articleId } = req.params;
   const { body } = req;
   await articleController.updateArticle(articleId, body);
-  res.redirect(`/admin/${articleId}/view`);
+  res.redirect(`/admin/article/${articleId}/view`);
 }
 
-// async function viewArticle(req, res, next) {
-//   return next();
-// }
+async function viewArticle(req, res) {
+  const { articleId } = req.params;
+  const post = await articleController.getArcticleWithRelations(articleId);
+  res.locals.seo = {
+    google: false,
+    sidebar: true,
+    title: 'Передпросмотр',
+    h1: post.h1,
+    keywords: post.keywords,
+    image: post.postimage,
+    description: post.description,
+  };
+  console.log(post);
+  return res.render('public/article', post);
+  // return res.render('public/article', {
+  //   post: p,
+  //   postcat: cats,
+  //   posttags: tags,
+  //   tags: JSON.stringify(tags),
+  // });
+}
 
 // async function publishArticle(req, res, next) {
 //   return next();

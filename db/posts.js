@@ -1,9 +1,21 @@
 // const createError   = require('http-errors');
 const moment        = require('moment');
 
-const { Post }     = require('../db');
+const {
+  mongodbId,
+  Post,
+}     = require('../db');
 // const config        = require('../config');
 // const getPagination = require('../utils/pagination');
+
+const join = {
+  tags: {
+    from: 'tags',
+    localField: 'tags',
+    foreignField: 'name',
+    as: 'tags',
+  },
+};
 
 const PostsQuery = {
   getById: _id => Post.findOne({ _id }),
@@ -17,7 +29,19 @@ const PostsQuery = {
       updatedAt: date,
     });
   },
-  update: (_id, update) => Post.update({ _id }, { $set: update }),
+  update: (_id, update) => Post.update(
+    { _id },
+    { $set: { ...update, updatedAt: new Date() } },
+  ),
+  getOneWithRelations: _id => new Promise((resolve, reject) => {
+    Post
+      .aggregate([
+        { $match: { _id: mongodbId(_id) } },
+        { $lookup: join.tags },
+      ])
+      .then(posts => resolve(posts[0]))
+      .catch(err => reject(err));
+  }),
 };
 
 module.exports = PostsQuery;

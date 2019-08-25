@@ -35,9 +35,19 @@ const updateArticle = async (_id, update) => {
   return 'Article successfully updated';
 };
 
+const getArcticleWithRelations = async (_id) => {
+  // @NOTE: debug only
+  const debug = await Posts.getById(_id);
+  console.log(debug);
+
+  const post = await Posts.getOneWithRelations(_id);
+  return post;
+};
+
 module.exports = {
   createNewArticle,
   getArticle,
   updateImage,
   updateArticle,
+  getArcticleWithRelations,
 };

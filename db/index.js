@@ -16,8 +16,9 @@ monk(url).catch((err) => {
 });
 
 module.exports = {
+  mongodbId: _id => monk.id(_id),
   User: monk(url).get('user'),
-  Post: monk(url).get('posts'),
-  Category: monk(url).get('categories'),
-  Tags: monk(url).get('tags'),
+  Post: monk(url).get('post'),
+  Category: monk(url).get('category'),
+  Tags: monk(url).get('tag'),
 };

@@ -12,11 +12,33 @@ const testForErrors = (req, res, next) => {
   return next();
 };
 
+const flashErrors = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    req.session.validationErrors = mapValidationErrorsForFlash(errors);
+  }
+  return next();
+};
+
 const validateArticleId = [
   check('articleId').isMongoId(),
   testForErrors,
 ];
 
+const validateArticle = [
+  'body',
+  'category',
+  'description',
+  'h1',
+  'keywords',
+  'postimage',
+  'slug',
+  'tags',
+  'title',
+].map(item => check(item).not().isEmpty());
+
 module.exports = {
   validateArticleId,
+  validateArticle,
+  flashErrors,
 };
