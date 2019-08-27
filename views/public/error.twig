@@ -5,8 +5,7 @@
 
   <p>Если ты читаешь это сообщение, то ты попал на страницу, которая не существует. Давай разберёмся почему это могло произойти.</p> 
 
-  <!-- убрать для юзверей -->
-  {% if user is defined  %}
+  {% if isAdmin %}
     <div class="alert alert-success" role="alert">
       <p>Status: <strong>{{ error.status }}</strong></p>
       <p>{{ error.message }}</p>

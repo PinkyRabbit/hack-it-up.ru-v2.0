@@ -1,49 +1,65 @@
 {% extends '../layout.twig' %}
 
 {% block bodyblock %}
-  {% if user is defined and post.published == false %}
+  {% if isAdmin and isPublished == false %}<!-- info that article is not published-->
     <div class="alert alert-info" role="alert">
-      <strong>Внимание! Это превью!</strong> Статья пока что не опубликована. Для того чтобы её опубликовать нажмите <a href="/admin/publish/{{post._id}}?slug={{post.slug}}">вот тут</a>.
+    <form action="/admin/article/{{_id}}/view?back=true&_csrf={{_csrf}}" method="post">
+      <input type="hidden" name="body" value="{{ body }}">
+      <input type="hidden" name="title" :value="article.title">
+      <input type="hidden" name="h1" value="{{ h1 }}">
+      <input type="hidden" name="description" value="{{ description }}">
+      <input type="hidden" name="keywords" value="{{ keywords }}">
+      <input type="hidden" name="postimage" value="{{ postimage }}">
+      <input type="hidden" name="slug" value="{{ slug }}">
+      <input type="hidden" name="category" value="{{ category }}">
+      {% for tag in tags %}
+        <input type="hidden" name="tags" value="{{ tag }}">
+      {% endfor %}
+      <strong>Внимание! Это превью!</strong> Статья пока что не опубликована. Для того чтобы её опубликовать нажмите <input type="submit" value="вот тут" />
+    </form>
     </div>
   {% endif %}
   <hr>
-  <article>{{ post.body }}</article>
-  <hr>
-  <h3>Прокомментировать:</h3>
-  <form method="post" action="/comment/{{post._id}}">
-    <input type="hidden" value={{ csrf }} name="_csrf">
-    <div class="form-group">
-      <label for="title" class="control-label">Представьтесь, пожалуйста:</label>
-      <div class="input-group">
-        <div class="input-group-addon">
-          <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+  <article>{{ body }}</article>
+
+  {% if published %}<!-- comments -->
+    <hr>
+    <h3>Прокомментировать:</h3>
+    <form method="post" action="/comment/{{_id}}">
+      <input type="hidden" value={{ csrf }} name="_csrf">
+      <div class="form-group">
+        <label for="title" class="control-label">Представьтесь, пожалуйста:</label>
+        <div class="input-group">
+          <div class="input-group-addon">
+            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+          </div>
+          <input type="text" id="name" name="name" class="form-control">
         </div>
-        <input type="text" id="name" name="name" class="form-control">
       </div>
-    </div>
 
-    <div class="form-group">
-      <label for="body">Ваше сообщение:</label>
-      <textarea id="body" name="body" class="form-control"></textarea>
-    </div>
-    <div class="form-group">
-      <div class="g-recaptcha" data-sitekey="6LfIQT4UAAAAAAEqLelVPTUASOC9Cdz4s_cr1ir8"></div>
-    </div>
-    <button class="btn btn-danger" type="submit">Отправить</button>
-  </form>
+      <div class="form-group">
+        <label for="body">Ваше сообщение:</label>
+        <textarea id="body" name="body" class="form-control"></textarea>
+      </div>
+      <div class="form-group">
+        <div class="g-recaptcha" data-sitekey="6LfIQT4UAAAAAAEqLelVPTUASOC9Cdz4s_cr1ir8"></div>
+      </div>
+      <button class="btn btn-danger" type="submit">Отправить</button>
+    </form>
 
-  {% if post.comments is defined %}
-    <table class="table table-striped" style="margin-top: 20px">
-      {% for comment in post.comments %}
-        <tr>
-          <td>
-            {{ comment.author }}<br />
-            {{ comment.date }}
-          </td>
-          <td>{{ comment.text }}</td>
-        </tr>
-      {% endfor %}
-    </table>
+    {% if post.comments is defined %}
+      <table class="table table-striped" style="margin-top: 20px">
+        {% for comment in post.comments %}
+          <tr>
+            <td>
+              {{ comment.author }}<br />
+              {{ comment.date }}
+            </td>
+            <td>{{ comment.text }}</td>
+          </tr>
+        {% endfor %}
+      </table>
+    {% endif %}
   {% endif %}
 {% endblock %}
 

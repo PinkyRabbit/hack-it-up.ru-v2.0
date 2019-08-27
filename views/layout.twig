@@ -2,6 +2,7 @@
 {% from 'partials/header.twig' import header %}
 {% from 'partials/footer.twig' import footer %}
 {% from 'partials/meta.twig' import meta %}
+{% from 'partials/pagedebug.twig' import pagedebug %}
 
 <!doctype html>
 <html lang="ru">
@@ -9,14 +10,14 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    {% if seo.description %}
-      <meta name="description" content="{{ seo.description }}">
+    {% if description %}
+      <meta name="description" content="{{ description }}">
     {% endif %}
-    {% if seo.keywords %}
-      <meta name="keywords" content="{{ seo.keywords }}">
+    {% if keywords %}
+      <meta name="keywords" content="{{ keywords }}">
     {% endif %}
 
-    <title>{{ seo.title ? 'hack-it-up.ru — ' ~ seo.title : 'hack-it-up.ru *_*' }}</title>
+    <title>{{ title ? 'hack-it-up.ru — ' ~ title : 'hack-it-up.ru *_*' }}</title>
 
     <link rel="shortcut icon" href="/favicon.png">
     <!-- stylesheet -->
@@ -34,19 +35,21 @@
   <body>
     <div class="container">
       {{ navbar(menucats, user, development) }}
-      {% if seo %}{{ header(seo) }}{% endif %}
+      {{ header(postimage) }}
       {% block body %}{% endblock %}
-      <h1>{{ seo ? seo.h1 : 'Happy Hacking *_*' }}</h1>
+      <h1>{{ h1 ? h1 : 'Happy Hacking *_*' }}</h1>
       <div class="content" id="main">
         <div class="row">
-          {% if seo and seo.sidebar %}
+          {% if sidebar %}
             <div class="col-xs-12 col-sm-9" id="content">
-              {% if post %}
-                {{ meta(user, post._id, postcat, posttags) }}
+              {{ meta(_id, tags, category, isAdmin) }}
+              {% if category is not defined %}
+                {{ pagedebug(title, h1, description, keywords) }}
               {% endif %}
+              {# {% if user %}{{ page-debug(title, h1, description, keywords) }}{% endif %} #}
               {% if messages is defined %}
                 {% for message in messages %}
-                    <div class="alert alert-{{ message.type }}" role="alert" style="margin-bottom: 10px">{{ message.msg }}</div>
+                  <div class="alert alert-{{ message.type }}" role="alert" style="margin-bottom: 10px">{{ message.msg }}</div>
                 {% endfor %}
               {% endif %}
               {% block bodyblock %}{% endblock %}
@@ -87,6 +90,7 @@
                         <div class="alert alert-{{ message.type }}" role="alert" style="margin-bottom: 10px">{{ message.msg }}</div>
                     {% endfor %}
                 {% endif %}
+                {{ pagedebug(title, h1, description, keywords) }}
                 {% block bodyblock %}{% endblock %}
             </div>
           {% endif %}

@@ -1,8 +1,8 @@
-{% macro header(seo) %}
+{% macro header(postimage, title) %}
   <header>
     <div>
-      {% if seo.image %}
-        <img src="/images/{{seo.image}}" alt="{{seo.title}}" class="logo">
+      {% if postimage %}
+        <img src="/images/{{postimage}}" alt="{{title}}" class="logo">
       {% else %}
         <img src="/images/standart/no-image.jpg" alt="hack-it-up" class="logo">
       {% endif %}

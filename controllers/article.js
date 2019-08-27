@@ -9,14 +9,8 @@ const createNewArticle = async () => {
   return post;
 };
 
-const getArticle = async (_id) => {
-  const post = await Posts.getById(_id);
-  return post;
-};
-
-const updateImage = async (_id, file) => {
-  const post = await Posts.getById(_id);
-  const { postimage } = post;
+const updateImage = async (article, file) => {
+  const { postimage } = article;
   if (postimage) {
     try {
       fs.unlinkSync(path.join(__dirname, `../public/images/${postimage}`));
@@ -25,29 +19,39 @@ const updateImage = async (_id, file) => {
     }
   }
   const newImage = `uploads/${file.filename}`;
-  const update = { postimage: newImage };
-  await Posts.update(_id, update);
+  await Posts.updateImage(article._id, newImage);
   return newImage;
 };
 
 const updateArticle = async (_id, update) => {
   await Posts.update(_id, update);
+
+  console.log('test:')
+  const test = await Posts.getById(_id);
+  console.log(test);
   return 'Article successfully updated';
 };
 
 const getArcticleWithRelations = async (_id) => {
-  // @NOTE: debug only
-  const debug = await Posts.getById(_id);
-  console.log(debug);
-
-  const post = await Posts.getOneWithRelations(_id);
+  const post = await Posts.getOneByIdWithRelations(_id);
   return post;
+};
+
+const publish = async (_id) => {
+  const post = await Posts.published(_id, true);
+  return post;
+};
+
+const makeUnpublished = async (_id) => {
+  await Posts.published(_id, false);
+  return 'Post was unpublished';
 };
 
 module.exports = {
   createNewArticle,
-  getArticle,
   updateImage,
   updateArticle,
   getArcticleWithRelations,
+  publish,
+  makeUnpublished,
 };

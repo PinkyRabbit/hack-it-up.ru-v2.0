@@ -18,15 +18,13 @@ adminRouter
   // .use('/comments', adminCommentRoute);
 
 function addSeoAdmin(req, res, next) {
-  res.locals.seo = {
-    google: false,
-    sidebar: false,
-    title: 'Админка',
-    description: 'Админка',
-    h1: 'Админка',
-    keywords: 'Админка',
-    image: 'standart/admin.jpg',
-  };
+  res.locals.google = false;
+  res.locals.sidebar = false;
+  res.locals.title = 'Админка';
+  res.locals.description = 'Админка';
+  res.locals.h1 = 'Админка';
+  res.locals.keywords = 'Админка';
+  res.locals.image = 'standart/admin.jpg';
 
   return next();
 }

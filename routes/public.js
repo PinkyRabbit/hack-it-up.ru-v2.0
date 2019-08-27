@@ -1,12 +1,25 @@
 const express = require('express');
 
+// const articleController = require('../controllers/article');
+const use = require('./use');
+const {
+  validateSlugs,
+  ifErrorsRedirectBackWith400,
+} = require('./validator');
+
 const publicRouter = express.Router();
 
 publicRouter
   // .get('/', news)
-  .get('/csrf', csrf);
+  .get('/csrf', csrf)
+  .get(
+    '/:categorySlug/:articleSlug',
+    validateSlugs(['categorySlug', 'articleSlug']),
+    ifErrorsRedirectBackWith400,
+    use.fullArticle,
+    articlePage,
+  );
   // .get('/category/:categorySlug', newsInCategory)
-  // .get('/category/:categorySlug/article/:articleSlug', article)
   // .get('/article/search', search)
   // .get('/tags/', tagsList)
   // .post('/comment/:articleSlug', newComment)
@@ -26,8 +39,15 @@ async function newsInCategory(req, res, next) {
   return next();
 }
 
-async function article(req, res, next) {
-  return next();
+async function articlePage(req, res) {
+  const { article } = req.session;
+
+  return res.render('public/article', {
+    ...article,
+    sidebar: true,
+    google: true,
+    _csrf: req.csrfToken(),
+  });
 }
 
 async function search(req, res, next) {

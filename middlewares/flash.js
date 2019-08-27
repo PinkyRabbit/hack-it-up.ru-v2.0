@@ -13,10 +13,8 @@ module.exports = (req, res, next) => {
   }
 
   if (req.session && req.session.validationErrors) {
-    const ve = req.session.validationErrors;
-    for (let i = 0; i < ve.length; i += 1) {
-      messages.push({ type: 'warning', msg: ve[i] });
-    }
+    const { validationErrors } = req.session;
+    validationErrors.forEach(error => messages.push({ type: error.type, msg: error.msg }));
     req.session.validationErrors = null;
   }
 
