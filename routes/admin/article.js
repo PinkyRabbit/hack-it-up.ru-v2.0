@@ -38,8 +38,6 @@ async function editArticle(req, res) {
 
 async function getJson(req, res) {
   const { article } = req.session;
-  console.log('getJson');
-  console.log(article);
   res.json(article);
 }
 
@@ -60,7 +58,7 @@ async function articlePresave(req, res) {
 async function saveArticle(req, res) {
   const { article } = req.session;
   const { body } = req;
-  console.log(body);
+
   await articleController.updateArticle(article._id, body);
   res.redirect(`/admin/article/${article._id}/view`);
 }
@@ -68,8 +66,6 @@ async function saveArticle(req, res) {
 async function viewArticle(req, res) {
   const { articleId } = req.params;
   const post = await articleController.getArcticleWithRelations(articleId);
-  console.log('viewArticle');
-  console.log(post);
 
   return res.render('public/article', {
     ...post,
@@ -80,11 +76,9 @@ async function viewArticle(req, res) {
 
 async function publishArticle(req, res) {
   const { articleId } = req.params;
-  console.log(articleId);
+
   const article = await articleController.publish(articleId);
-  console.log(article);
   const category = await createOrUpdateCategory(article.category);
-  console.log(category);
 
   req.flash('success', 'Статья успешно опубликована!');
   const redirectLink = `/${category.slug}/${article.slug}`;

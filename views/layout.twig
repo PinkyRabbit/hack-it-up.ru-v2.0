@@ -42,11 +42,11 @@
         <div class="row">
           {% if sidebar %}
             <div class="col-xs-12 col-sm-9" id="content">
-              {{ meta(_id, tags, category, isAdmin) }}
               {% if category is not defined %}
                 {{ pagedebug(title, h1, description, keywords) }}
+              {% else %}
+                {{ meta(_id, tags, category, isAdmin) }}
               {% endif %}
-              {# {% if user %}{{ page-debug(title, h1, description, keywords) }}{% endif %} #}
               {% if messages is defined %}
                 {% for message in messages %}
                   <div class="alert alert-{{ message.type }}" role="alert" style="margin-bottom: 10px">{{ message.msg }}</div>

@@ -16,7 +16,7 @@ const join = {
     as: 'tags',
   },
   categories: {
-    from: 'categories',
+    from: 'category',
     localField: 'category',
     foreignField: 'name',
     as: 'categories',
@@ -53,7 +53,7 @@ const getFullAggrigationWithoutQuery = [
     $project:
       {
         _id: 1,
-        published: 1,
+        isPublished: 1,
         updatedAt: 1,
         body: 1,
         description: 1,
@@ -64,11 +64,15 @@ const getFullAggrigationWithoutQuery = [
         title: 1,
         tags: 1,
         category: {
-          name: {
-            $cond: { if: '$categories.name', then: '$categories.name', else: '$category' },
+          $cond: {
+            if: '$categories',
+            // then: { $arrayElemAt: ['$categories', 0] },
+            then: '$categories',
+            else: '$category',
           },
-          slug: '$categories.slug',
+          // slug: '$categories.slug',
         },
+        // categories: 1,
       },
   },
 ];
@@ -85,21 +89,18 @@ const PostsQuery = {
       updatedAt: date,
     });
   },
-  update: (_id, update) => {
-    console.log(sanitilize({ ...update, updatedAt: new Date() }))
-    return Post.update(
+  update: (_id, update) => Post.update(
     { _id },
     { $set: sanitilize({ ...update, updatedAt: new Date() }) },
-  );},
-  // update: (_id, update) => Post.update(
-  //   { _id },
-  //   { $set: sanitilize({ ...update, updatedAt: new Date() }) },
-  // ),
-  published: (_id, isPublished) => Post.update({ _id }, {
+  ),
+  published: (_id, isPublished) => Post.findOneAndUpdate({ _id }, {
     $set: {
       isPublished,
       updatedAt: new Date(),
     },
+  },
+  {
+    returnNewDocument: true,
   }),
   updateImage: (_id, postimage) => Post.update({ _id }, {
     $set: {

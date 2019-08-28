@@ -25,10 +25,6 @@ const updateImage = async (article, file) => {
 
 const updateArticle = async (_id, update) => {
   await Posts.update(_id, update);
-
-  console.log('test:')
-  const test = await Posts.getById(_id);
-  console.log(test);
   return 'Article successfully updated';
 };
 
