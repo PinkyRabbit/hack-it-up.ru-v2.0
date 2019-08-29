@@ -2,12 +2,15 @@ const { Category } = require('../db');
 
 const CategoryQuery = {
   getAll: () => Category.find({}),
+
   createOrUpdate: category => Category
     .findOneAndUpdate(
       { name: category.name },
       { $set: category },
       { upsert: true, returnNewDocument: true },
     ),
+
+  findBySlug: slug => Category.findOne({ slug }),
 };
 
 module.exports = CategoryQuery;

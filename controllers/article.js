@@ -1,8 +1,11 @@
 const fs = require('fs');
 const path = require('path');
+const moment = require('moment');
 
 const Posts = require('../db/posts');
+const Category = require('../db/categories');
 const logger = require('../utils/logger');
+const createPagination = require('../utils/pagination');
 
 const createNewArticle = async () => {
   const post = await Posts.new();
@@ -43,6 +46,59 @@ const makeUnpublished = async (_id) => {
   return 'Post was unpublished';
 };
 
+const getBaseForNews = async (page = 1, filters = null) => {
+  let news = await Posts.getNews(page, filters);
+  news = news.map(item => ({
+    ...item,
+    updatedAt: moment(item.updateAt).locale('ru').format('LLL'),
+  }));
+  console.log(news);
+  const count = await Posts.getCount(filters);
+
+  const pagination = createPagination(count || 0, page, '/');
+
+  return { news, pagination };
+};
+
+const getNews = async ({ page = 1 }) => {
+  const { news, pagination } = await getBaseForNews(page);
+
+  const seo = {
+    title: 'Главная',
+    h1: 'Hello world!',
+    keywords: 'developer, примеры, nodejs, учить',
+    postimage: 'standart/main.jpg',
+    description: 'Этот блог родился, когда я делал первые шаги в NodeJS. В нём я публикую свои мысли и заметки про программирование и лучше писать код.',
+  };
+  if (page !== 1) {
+    seo.title = `Блог, страница ${page}`;
+    seo.h1 = `Лента. Cтраница ${page}`;
+    seo.description = `Cтраница ${page}. ${seo.description}`;
+  }
+
+  return { news, pagination, seo };
+};
+
+const getCategoryNews = async ({ page = 1 }, slug) => {
+  const { news, pagination } = await getBaseForNews(page, { 'categories.$.slug': slug });
+  const category = Category.findBySlug(slug);
+
+  const seo = {
+    title: `Раздел ${category.name}`,
+    h1: category.name,
+    keywords: category.keywords || '',
+    postimage: 'standart/main.jpg',
+    description: category.description || '',
+  };
+  if (page !== 1) {
+    seo.title = `${seo.title}, страница ${page}`;
+    seo.h1 = `${seo.h1}. Cтраница ${page}`;
+    seo.description = `Cтраница ${page}. ${seo.description}`;
+  }
+
+  return { news, pagination, seo };
+};
+
 module.exports = {
   createNewArticle,
   updateImage,
@@ -50,4 +106,6 @@ module.exports = {
   getArcticleWithRelations,
   publish,
   makeUnpublished,
+  getNews,
+  getCategoryNews,
 };

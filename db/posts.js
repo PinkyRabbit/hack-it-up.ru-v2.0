@@ -1,12 +1,11 @@
-// const createError   = require('http-errors');
-const moment        = require('moment');
+const moment = require('moment');
 
 const {
   mongodbId,
   Post,
 } = require('../db');
-// const config        = require('../config');
-// const getPagination = require('../utils/pagination');
+
+const limit = parseInt(process.env.PAGE_LIMIT, 10);
 
 const join = {
   tags: {
@@ -40,6 +39,30 @@ const sanitilize = article => ({
     : [article.tags].filter(Boolean),
 });
 
+const projectForFullArticle = {
+  $project:
+    {
+      _id: 1,
+      isPublished: 1,
+      updatedAt: 1,
+      body: 1,
+      description: 1,
+      h1: 1,
+      keywords: 1,
+      postimage: 1,
+      slug: 1,
+      title: 1,
+      tags: 1,
+      category: {
+        $cond: {
+          if: '$categories',
+          then: '$categories',
+          else: '$category',
+        },
+      },
+    },
+};
+
 const getFullAggrigationWithoutQuery = [
   { $lookup: join.tags },
   { $lookup: join.categories },
@@ -49,37 +72,13 @@ const getFullAggrigationWithoutQuery = [
       preserveNullAndEmptyArrays: true,
     },
   },
-  {
-    $project:
-      {
-        _id: 1,
-        isPublished: 1,
-        updatedAt: 1,
-        body: 1,
-        description: 1,
-        h1: 1,
-        keywords: 1,
-        postimage: 1,
-        slug: 1,
-        title: 1,
-        tags: 1,
-        category: {
-          $cond: {
-            if: '$categories',
-            // then: { $arrayElemAt: ['$categories', 0] },
-            then: '$categories',
-            else: '$category',
-          },
-          // slug: '$categories.slug',
-        },
-        // categories: 1,
-      },
-  },
 ];
 
 const PostsQuery = {
   getById: _id => Post.findOne({ _id }),
+
   findBySlug: slug => Post.findOne({ slug }),
+
   new: () => {
     const date = new Date();
     return Post.insert({
@@ -89,10 +88,12 @@ const PostsQuery = {
       updatedAt: date,
     });
   },
+
   update: (_id, update) => Post.update(
     { _id },
     { $set: sanitilize({ ...update, updatedAt: new Date() }) },
   ),
+
   published: (_id, isPublished) => Post.findOneAndUpdate({ _id }, {
     $set: {
       isPublished,
@@ -102,70 +103,68 @@ const PostsQuery = {
   {
     returnNewDocument: true,
   }),
+
   updateImage: (_id, postimage) => Post.update({ _id }, {
     $set: {
       postimage,
       updatedAt: new Date(),
     },
   }),
+
   getOneByIdWithRelations: _id => new Promise((resolve, reject) => {
     const aggregation = [...getFullAggrigationWithoutQuery];
     aggregation.unshift({ $match: { _id: mongodbId(_id) } });
+    aggregation.push(projectForFullArticle);
     Post
       .aggregate(aggregation)
       .then(posts => resolve(posts[0]))
       .catch(err => reject(err));
   }),
+
   getOneBySlugWithRelations: slug => new Promise((resolve, reject) => {
     const aggregation = [...getFullAggrigationWithoutQuery];
     aggregation.unshift({ $match: { slug } });
+    aggregation.push(projectForFullArticle);
     Post
       .aggregate(aggregation)
       .then(posts => resolve(posts[0]))
+      .catch(err => reject(err));
+  }),
+
+  getNews: (page, filter = null) => {
+    const offset = limit * (page - 1);
+    const aggregation = [...getFullAggrigationWithoutQuery];
+    let where = { isPublished: true };
+    if (filter) {
+      where = { ...where, ...filter };
+      // where = { $and: [where, filter] };
+    }
+    console.log(where);
+    aggregation.unshift({ $match: where });
+    aggregation.push(projectForFullArticle);
+    aggregation.push({ $limit: limit });
+    aggregation.push({ $skip: offset });
+    aggregation.push({ $sort: { updatedAt: -1 } });
+
+    return Post.aggregate(aggregation);
+  },
+
+  getCount: (filter = null) => new Promise((resolve, reject) => {
+    const aggregation = [...getFullAggrigationWithoutQuery];
+    let where = { isPublished: true };
+    if (filter) {
+      where = { ...where, ...filter };
+    }
+    aggregation.unshift({ $match: where });
+    aggregation.push({ $count: 'postsCount' });
+    return Post.aggregate(aggregation)
+      .then(posts => resolve(posts[0] ? posts[0].postsCount : []))
       .catch(err => reject(err));
   }),
 };
 
 module.exports = PostsQuery;
 /*
-
-
-// get all posts
-module.exports.getAll = filters => Posts.find(filters);
-module.exports.findById = _id => Posts.findOne({ _id });
-
-// @TODO: need work
-module.exports.getAllWithPagination = filters => Posts.find(filters);
-
-// @FIXME: need to rework:
-module.exports.getAllNews = (page = 1, filter = null, urlPrefix = '/') => {
-  return new Promise((resolve, reject) => {
-    let query = { published: true };
-    if (filter) query = Object.assign(query, filter);
-
-    return Posts.find(query).then((docs) => {
-      if (docs.length < config.posts.limit) {
-        const res = docs.sort((a, b) => b.createdAt - a.createdAt);
-        return resolve({ filtred: res, pagination: null });
-      }
-
-      if (config.posts.limit * (page - 1) > docs.length) {
-        return reject(createError(404, 'Страница не существует'));
-      }
-
-      const pagination = getPagination(docs, page, config.posts.limit, urlPrefix);
-      return Posts.find({
-        published: true,
-      }, {
-        sort: { createdAt: -1 },
-        skip: (page - 1) * config.posts.limit,
-        limit: config.posts.limit,
-      })
-        .then(filtred => resolve({ filtred, pagination }));
-    });
-  });
-};
-
 module.exports.findBySlug = slug => Posts.findOne({ slug });
 
 module.exports.makeUnpublished = _id => Posts.update({ _id }, { $set: { published: false } });

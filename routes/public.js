@@ -1,6 +1,6 @@
 const express = require('express');
 
-// const articleController = require('../controllers/article');
+const articleController = require('../controllers/article');
 const use = require('./use');
 const {
   validateSlugs,
@@ -10,7 +10,7 @@ const {
 const publicRouter = express.Router();
 
 publicRouter
-  // .get('/', news)
+  .get('/', getNews)
   .get('/csrf', csrf)
   .get(
     '/:categorySlug/:articleSlug',
@@ -18,8 +18,13 @@ publicRouter
     ifErrorsRedirectBackWith400,
     use.fullArticle,
     articlePage,
+  )
+  .get(
+    '/:categorySlug',
+    validateSlugs(['categorySlug']),
+    ifErrorsRedirectBackWith400,
+    newsInCategory
   );
-  // .get('/category/:categorySlug', newsInCategory)
   // .get('/article/search', search)
   // .get('/tags/', tagsList)
   // .post('/comment/:articleSlug', newComment)
@@ -31,12 +36,40 @@ async function csrf(req, res) {
   res.send(token);
 }
 
-async function news(req, res, next) {
-  return next();
+async function getNews(req, res, next) {
+  const { query } = req;
+  const { news, pagination, seo } = await articleController.getNews(query);
+
+  if (!news.length && query) {
+    return next();
+  }
+
+  return res.render('public/posts', {
+    google: true,
+    sidebar: true,
+    news,
+    pagination,
+    ...seo,
+  });
 }
 
 async function newsInCategory(req, res, next) {
-  return next();
+  const { query } = req;
+  const { categorySlug } = req.params;
+  const { news, pagination, seo } = await articleController
+    .getCategoryNews(query, categorySlug);
+
+  if (!news.length && query) {
+    return next();
+  }
+
+  return res.render('public/posts', {
+    google: true,
+    sidebar: true,
+    news,
+    pagination,
+    ...seo,
+  });
 }
 
 async function articlePage(req, res) {
