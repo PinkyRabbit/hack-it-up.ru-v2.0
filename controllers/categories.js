@@ -1,4 +1,4 @@
-const Categories = require('../db/categories');
+const Categories = require('../db/category');
 const { createSlug } = require('../utils/helpers');
 
 const getAllCategories = async () => {

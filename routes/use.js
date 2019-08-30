@@ -1,6 +1,6 @@
 const createError  = require('http-errors');
 
-const Posts = require('../db/posts');
+const Posts = require('../db/post');
 
 const article = async (req, res, next) => {
   const { articleId } = req.params;

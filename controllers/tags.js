@@ -1,4 +1,4 @@
-const Tags = require('../db/tags');
+const Tags = require('../db/tag');
 const { createSlug } = require('../utils/helpers');
 
 const getAlltags = async () => {

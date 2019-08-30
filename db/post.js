@@ -3,13 +3,13 @@ const moment = require('moment');
 const {
   mongodbId,
   Post,
-} = require('../db');
+} = require('.');
 
 const limit = parseInt(process.env.PAGE_LIMIT, 10);
 
 const join = {
   tags: {
-    from: 'tags',
+    from: 'tag',
     localField: 'tags',
     foreignField: 'name',
     as: 'tags',
@@ -53,9 +53,12 @@ const projectForFullArticle = {
       slug: 1,
       title: 1,
       tags: 1,
+      // category: 1,
+      // categories: 1,
       category: {
         $cond: {
           if: '$categories',
+          // then: { $first: '$categories' },
           then: '$categories',
           else: '$category',
         },
@@ -111,7 +114,7 @@ const PostsQuery = {
     },
   }),
 
-  getOneByIdWithRelations: _id => new Promise((resolve, reject) => {
+  getOneByIdWithRelations: _id => new Promise(async (resolve, reject) => {
     const aggregation = [...getFullAggrigationWithoutQuery];
     aggregation.unshift({ $match: { _id: mongodbId(_id) } });
     aggregation.push(projectForFullArticle);
@@ -134,14 +137,11 @@ const PostsQuery = {
   getNews: (page, filter = null) => {
     const offset = limit * (page - 1);
     const aggregation = [...getFullAggrigationWithoutQuery];
-    let where = { isPublished: true };
-    if (filter) {
-      where = { ...where, ...filter };
-      // where = { $and: [where, filter] };
-    }
-    console.log(where);
-    aggregation.unshift({ $match: where });
+    aggregation.unshift({ $match: { isPublished: true } });
     aggregation.push(projectForFullArticle);
+    if (filter) {
+      aggregation.push({ $match: filter });
+    }
     aggregation.push({ $limit: limit });
     aggregation.push({ $skip: offset });
     aggregation.push({ $sort: { updatedAt: -1 } });
@@ -151,11 +151,10 @@ const PostsQuery = {
 
   getCount: (filter = null) => new Promise((resolve, reject) => {
     const aggregation = [...getFullAggrigationWithoutQuery];
-    let where = { isPublished: true };
+    aggregation.unshift({ $match: { isPublished: true } });
     if (filter) {
-      where = { ...where, ...filter };
+      aggregation.push({ $match: filter });
     }
-    aggregation.unshift({ $match: where });
     aggregation.push({ $count: 'postsCount' });
     return Post.aggregate(aggregation)
       .then(posts => resolve(posts[0] ? posts[0].postsCount : []))

@@ -1,6 +1,6 @@
 const transliteration = require('transliteration.cyr');
 
-const Post = require('../db/posts');
+const Post = require('../db/post');
 
 const createSlug = (str) => {
   let slug = transliteration.transliterate(str)

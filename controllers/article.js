@@ -2,8 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const moment = require('moment');
 
-const Posts = require('../db/posts');
-const Category = require('../db/categories');
+const Posts = require('../db/post');
+const Category = require('../db/category');
 const logger = require('../utils/logger');
 const createPagination = require('../utils/pagination');
 
@@ -52,7 +52,6 @@ const getBaseForNews = async (page = 1, filters = null) => {
     ...item,
     updatedAt: moment(item.updateAt).locale('ru').format('LLL'),
   }));
-  console.log(news);
   const count = await Posts.getCount(filters);
 
   const pagination = createPagination(count || 0, page, '/');
@@ -80,8 +79,8 @@ const getNews = async ({ page = 1 }) => {
 };
 
 const getCategoryNews = async ({ page = 1 }, slug) => {
-  const { news, pagination } = await getBaseForNews(page, { 'categories.$.slug': slug });
-  const category = Category.findBySlug(slug);
+  const { news, pagination } = await getBaseForNews(page, { 'category.slug': slug });
+  const category = await Category.findBySlug(slug);
 
   const seo = {
     title: `Раздел ${category.name}`,
