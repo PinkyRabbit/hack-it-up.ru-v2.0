@@ -15,7 +15,14 @@ const testForErrors = (req, res, next) => {
 const ifErrorsRedirectBackWith400 = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log(errors.mapped())
+    return next(createError(400, 'Bad request'));
+  }
+  return next();
+};
+
+const ifErrorsRedirectBackWith404 = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
     return next(createError(400, 'Bad request'));
   }
   return next();
@@ -63,4 +70,5 @@ module.exports = {
   validateSlugs,
   flashErrors,
   ifErrorsRedirectBackWith400,
+  ifErrorsRedirectBackWith404,
 };

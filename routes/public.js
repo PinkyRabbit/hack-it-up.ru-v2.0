@@ -1,10 +1,11 @@
 const express = require('express');
+const { isEmpty } = require('lodash');
 
 const articleController = require('../controllers/article');
 const use = require('./use');
 const {
   validateSlugs,
-  ifErrorsRedirectBackWith400,
+  ifErrorsRedirectBackWith404,
 } = require('./validator');
 
 const publicRouter = express.Router();
@@ -15,14 +16,14 @@ publicRouter
   .get(
     '/:categorySlug/:articleSlug',
     validateSlugs(['categorySlug', 'articleSlug']),
-    ifErrorsRedirectBackWith400,
+    ifErrorsRedirectBackWith404,
     use.fullArticle,
     articlePage,
   )
   .get(
     '/:categorySlug',
     validateSlugs(['categorySlug']),
-    ifErrorsRedirectBackWith400,
+    ifErrorsRedirectBackWith404,
     newsInCategory
   );
   // .get('/article/search', search)
@@ -40,7 +41,7 @@ async function getNews(req, res, next) {
   const { query } = req;
   const { news, pagination, seo } = await articleController.getNews(query);
 
-  if (!news.length && query) {
+  if (!news.length && !isEmpty(query)) {
     return next();
   }
 
@@ -59,7 +60,7 @@ async function newsInCategory(req, res, next) {
   const { news, pagination, seo } = await articleController
     .getCategoryNews(query, categorySlug);
 
-  if (!news.length && query) {
+  if (!news.length && !isEmpty(query)) {
     return next();
   }
 
