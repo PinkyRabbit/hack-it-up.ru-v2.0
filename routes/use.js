@@ -15,6 +15,10 @@ const article = async (req, res, next) => {
 };
 
 const fullArticle = async (req, res, next) => {
+  if (req.session && req.session.reserved) {
+    return next();
+  }
+
   const {
     articleSlug,
     categorySlug,

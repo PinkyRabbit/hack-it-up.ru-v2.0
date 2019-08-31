@@ -4,6 +4,7 @@ const moment = require('moment');
 
 const Posts = require('../db/post');
 const Category = require('../db/category');
+const Tag = require('../db/tag');
 const logger = require('../utils/logger');
 const createPagination = require('../utils/pagination');
 
@@ -31,8 +32,14 @@ const updateArticle = async (_id, update) => {
   return 'Article successfully updated';
 };
 
+const getById = async (_id) => {
+  const post  = await Posts.getById(_id);
+  return post;
+}
+
 const getArcticleWithRelations = async (_id) => {
   const post = await Posts.getOneByIdWithRelations(_id);
+  console.log(post);
   return post;
 };
 
@@ -98,8 +105,29 @@ const getCategoryNews = async ({ page = 1 }, slug) => {
   return { news, pagination, seo };
 };
 
+const getTagNews = async ({ page = 1 }, slug) => {
+  const { news, pagination } = await getBaseForNews(page, { 'tag.slug': slug });
+  const tag = await Tag.findBySlug(slug);
+
+  const seo = {
+    title: tag.name,
+    h1: `Про ${tag.name}.`,
+    keywords: tag.name,
+    postimage: 'standart/main.jpg',
+    description: `Это раздел про ${tag.name}.` || '',
+  };
+  if (page !== 1) {
+    seo.title = `${seo.title}, страница ${page}`;
+    seo.h1 = `${seo.h1}. Cтраница ${page}`;
+    seo.description = `${seo.description} Cтраница ${page}.`;
+  }
+
+  return { news, pagination, seo };
+};
+
 module.exports = {
   createNewArticle,
+  getById,
   updateImage,
   updateArticle,
   getArcticleWithRelations,
@@ -107,4 +135,5 @@ module.exports = {
   makeUnpublished,
   getNews,
   getCategoryNews,
+  getTagNews,
 };

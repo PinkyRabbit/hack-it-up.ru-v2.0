@@ -7,7 +7,6 @@ const use = require('../use');
 const {
   validateArticleId,
   validateArticle,
-  flashErrors,
 } = require('../validator');
 
 const adminArticleRouter = express.Router();
@@ -17,10 +16,10 @@ adminArticleRouter
   .get('/:articleId', validateArticleId, use.article, validateArticleId, getJson)
   .get('/:articleId/edit', validateArticleId, use.article, editArticle)
   .put('/:articleId/edit', validateArticleId, use.article, articlePresave)
-  .post('/:articleId/edit', validateArticleId, use.article, validateArticle, flashErrors, saveArticle)
+  .post('/:articleId/edit', validateArticleId, use.article, validateArticle(false), saveArticle)
   .post('/:articleId/image', validateArticleId, use.article, uploadImage, checkUploadedImage)
   .get('/:articleId/view', validateArticleId, use.article, viewArticle)
-  .post('/:articleId/view', validateArticleId, use.article, validateArticle, flashErrors, publishArticle);
+  .post('/:articleId/view', validateArticleId, use.article, validateArticle(true), publishArticle);
 
 async function createAndRedirectToNewArticle(req, res) {
   const { _id: articleId } = await articleController.createNewArticle();
@@ -65,10 +64,16 @@ async function saveArticle(req, res) {
 
 async function viewArticle(req, res) {
   const { articleId } = req.params;
-  const post = await articleController.getArcticleWithRelations(articleId);
+  const post = await articleController.getById(articleId);
 
   return res.render('public/article', {
     ...post,
+    category: {
+      name: post.category || '',
+    },
+    tags: post.tags.length
+      ? post.tags.map(tag => ({ name: tag }))
+      : [],
     sidebar: true,
     _csrf: req.csrfToken(),
   });

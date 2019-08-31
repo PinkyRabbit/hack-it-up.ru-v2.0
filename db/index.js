@@ -20,5 +20,5 @@ module.exports = {
   User: monk(url).get('user'),
   Post: monk(url).get('post'),
   Category: monk(url).get('category'),
-  Tags: monk(url).get('tag'),
+  Tag: monk(url).get('tag'),
 };

@@ -1,74 +1,78 @@
-const { check, validationResult, param } = require('express-validator/check');
+const Joi = require('joi');
 const createError = require('http-errors');
+const { uniq } = require('lodash');
 
-const { mapValidationErrorsForFlash } = require('../utils/helpers');
+const config = require('./validator.config');
 
-const testForErrors = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    req.session.validationErrors = mapValidationErrorsForFlash(errors);
-    return next(createError(400, 'Bad request'));
-  }
-  return next();
+Joi.objectId = require('joi-objectid')(Joi);
+
+const articleSchema = Object
+  .assign(...config.articleFields.map((prop) => {
+    if (prop === 'tags') {
+      return { [prop]: Joi.array().items(Joi.string().min(2)).required() };
+    }
+
+    return { [prop]: Joi.string().min(2).required() };
+  }));
+
+const getSlugsSchema = slugsArray => Object
+  .assign(...slugsArray.map(slug => ({ [slug]: Joi.string().regex(/^[a-z0-9-]+$/) })));
+
+const validateSlugs = (slugsArray, canBeReservedWord = false) => {
+  const slugsSchema = getSlugsSchema(slugsArray);
+
+  return (req, res, next) => {
+    if (canBeReservedWord && config.reservedWords.includes(req.baseUrl)) {
+      req.session.reserved = true;
+      return next();
+    }
+    const { error } = Joi.validate(req.params, slugsSchema);
+
+    if (error) {
+      return next(createError(400, 'Bad request'));
+    }
+    return next();
+  };
 };
 
-const ifErrorsRedirectBackWith400 = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
+const validateArticle = (isErrorThrowing = true) => (req, res, next) => {
+  const { error: err } = Joi.validate(req.params, {
+    articleId: Joi.objectId().required(),
+  });
+
+  if (err) {
     return next(createError(400, 'Bad request'));
   }
-  return next();
-};
 
-const ifErrorsRedirectBackWith404 = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return next(createError(400, 'Bad request'));
-  }
-  return next();
-};
+  const { body } = req;
+  const { error } = Joi.validate(body, articleSchema);
+  if (error) {
+    const erroredFields = uniq(error.details.map(element => element.path[0]));
+    erroredFields
+      .forEach(field => req.flash('success', `Пустое значение в поле ${field.toUpperCase()}`));
 
-const flashErrors = (req, res, next) => {
-  const { back } = req.query;
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    req.session.validationErrors = mapValidationErrorsForFlash(errors, 'success');
-    if (back) {
+    if (isErrorThrowing) {
+      res.status(400);
       return res.redirect('back');
     }
   }
+
   return next();
 };
 
-const validateArticleId = [
-  check('articleId').isMongoId(),
-  testForErrors,
-];
+const validateArticleId = (req, res, next) => {
+  const { error } = Joi.validate(req.params, {
+    articleId: Joi.objectId().required(),
+  });
 
-const validateSlugs = slugsArray => slugsArray
-  .map(slug => [
-    param(slug).not().isEmpty(),
-    param(slug).matches(/^[a-z0-9-]+$/i),
-  ]);
-
-const validateArticle = [
-  'body',
-  'category',
-  'description',
-  'h1',
-  'keywords',
-  'postimage',
-  'slug',
-  'tags',
-  'title',
-].map(item => check(item).not().isEmpty()
-  .withMessage(`Пустое значение в поле ${item.toUpperCase()}`));
+  if (error) {
+    return next(createError(400, 'Bad request'));
+  }
+  return next();
+};
 
 module.exports = {
   validateArticleId,
   validateArticle,
   validateSlugs,
-  flashErrors,
-  ifErrorsRedirectBackWith400,
-  ifErrorsRedirectBackWith404,
 };

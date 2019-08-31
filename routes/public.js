@@ -3,10 +3,7 @@ const { isEmpty } = require('lodash');
 
 const articleController = require('../controllers/article');
 const use = require('./use');
-const {
-  validateSlugs,
-  ifErrorsRedirectBackWith404,
-} = require('./validator');
+const { validateSlugs } = require('./validator');
 
 const publicRouter = express.Router();
 
@@ -15,19 +12,21 @@ publicRouter
   .get('/csrf', csrf)
   .get(
     '/:categorySlug/:articleSlug',
-    validateSlugs(['categorySlug', 'articleSlug']),
-    ifErrorsRedirectBackWith404,
+    validateSlugs(['categorySlug', 'articleSlug'], true),
     use.fullArticle,
     articlePage,
   )
   .get(
     '/:categorySlug',
-    validateSlugs(['categorySlug']),
-    ifErrorsRedirectBackWith404,
-    newsInCategory
+    validateSlugs(['categorySlug'], true),
+    newsInCategory,
+  )
+  .get(
+    '/tag/:tagSlug',
+    validateSlugs(['tagSlug']),
+    newsByTag,
   );
   // .get('/article/search', search)
-  // .get('/tags/', tagsList)
   // .post('/comment/:articleSlug', newComment)
   // .get('/login', loginPage)
   // .post('/login', authorization);
@@ -55,6 +54,10 @@ async function getNews(req, res, next) {
 }
 
 async function newsInCategory(req, res, next) {
+  if (req.session && req.session.reserved) {
+    return next();
+  }
+
   const { query } = req;
   const { categorySlug } = req.params;
   const { news, pagination, seo } = await articleController
@@ -73,8 +76,32 @@ async function newsInCategory(req, res, next) {
   });
 }
 
-async function articlePage(req, res) {
+async function newsByTag(req, res, next) {
+  const { query } = req;
+  const { tagSlug } = req.params;
+  const { news, pagination, seo } = await articleController
+    .getTagNews(query, tagSlug);
+
+  if (!news.length && !isEmpty(query)) {
+    return next();
+  }
+
+  return res.render('public/posts', {
+    google: true,
+    sidebar: true,
+    news,
+    pagination,
+    ...seo,
+  });
+}
+
+async function articlePage(req, res, next) {
+  if (req.session && req.session.reserved) {
+    return next();
+  }
+
   const { article } = req.session;
+  console.log(article);
 
   return res.render('public/article', {
     ...article,

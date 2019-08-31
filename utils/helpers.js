@@ -32,21 +32,10 @@ const generator = async (query) => {
   return { error: true };
 };
 
-const mapValidationErrorsForFlash = (errors, type = 'warning') => {
-  const validationErrors = errors.mapped();
-  return Object
-    .keys(validationErrors)
-    .map(key => ({
-      type,
-      msg: validationErrors[key].msg,
-    }));
-};
-
 const lean = object => Object.assign({}, object);
 
 module.exports = {
   createSlug,
   generator,
-  mapValidationErrorsForFlash,
   lean,
 };
