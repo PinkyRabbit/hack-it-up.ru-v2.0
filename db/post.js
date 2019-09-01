@@ -159,6 +159,8 @@ const PostsQuery = {
       .then(posts => resolve(posts[0] ? posts[0].postsCount : []))
       .catch(err => reject(err));
   }),
+
+  getUnpublished: () => Post.find({ isPublished: false }),
 };
 
 module.exports = PostsQuery;

@@ -11,6 +11,8 @@ const CategoryQuery = {
     ),
 
   findBySlug: slug => Category.findOne({ slug }),
+
+  getAllCategories: () => Category.find({}),
 };
 
 module.exports = CategoryQuery;

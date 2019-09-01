@@ -34,7 +34,7 @@
   </head>
   <body>
     <div class="container">
-      {{ navbar(menucats, user, development) }}
+      {{ navbar(menucats, user, development, isAdmin) }}
       {{ header(postimage) }}
       {% block body %}{% endblock %}
       <h1>{{ h1 ? h1 : 'Happy Hacking *_*' }}</h1>

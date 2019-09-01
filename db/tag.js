@@ -6,6 +6,8 @@ const TagQuery = {
   findBySlug: slug => Tag.findOne({ slug }),
 
   create: newTag => Tag.insert(newTag),
+
+  getAllTags: () => Tag.find({}),
 };
 
 module.exports = TagQuery;
