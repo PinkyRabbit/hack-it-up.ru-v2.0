@@ -2,7 +2,6 @@ const express = require('express');
 const { isEmpty } = require('lodash');
 
 const articleController = require('../controllers/article');
-const use = require('./use');
 const { validateSlugs } = require('./validator');
 
 const publicRouter = express.Router();
@@ -10,17 +9,6 @@ const publicRouter = express.Router();
 publicRouter
   .get('/', getNews)
   .get('/csrf', csrf)
-  .get(
-    '/:categorySlug/:articleSlug',
-    validateSlugs(['categorySlug', 'articleSlug'], true),
-    use.fullArticle,
-    articlePage,
-  )
-  .get(
-    '/:categorySlug',
-    validateSlugs(['categorySlug'], true),
-    newsInCategory,
-  )
   .get(
     '/tag/:tagSlug',
     validateSlugs(['tagSlug']),
@@ -40,30 +28,7 @@ async function getNews(req, res, next) {
   const { query } = req;
   const { news, pagination, seo } = await articleController.getNews(query);
 
-  if (!news.length && !isEmpty(query)) {
-    return next();
-  }
-
-  return res.render('public/posts', {
-    google: true,
-    sidebar: true,
-    news,
-    pagination,
-    ...seo,
-  });
-}
-
-async function newsInCategory(req, res, next) {
-  if (req.session && req.session.reserved) {
-    return next();
-  }
-
-  const { query } = req;
-  const { categorySlug } = req.params;
-  const { news, pagination, seo } = await articleController
-    .getCategoryNews(query, categorySlug);
-
-  if (!news.length && !isEmpty(query)) {
+  if (!seo || (!news.length && isEmpty(query))) {
     return next();
   }
 
@@ -82,7 +47,7 @@ async function newsByTag(req, res, next) {
   const { news, pagination, seo } = await articleController
     .getTagNews(query, tagSlug);
 
-  if (!news.length && !isEmpty(query)) {
+  if (!seo || (!news.length && isEmpty(query))) {
     return next();
   }
 
@@ -92,22 +57,6 @@ async function newsByTag(req, res, next) {
     news,
     pagination,
     ...seo,
-  });
-}
-
-async function articlePage(req, res, next) {
-  if (req.session && req.session.reserved) {
-    return next();
-  }
-
-  const { article } = req.session;
-  console.log(article);
-
-  return res.render('public/article', {
-    ...article,
-    sidebar: true,
-    google: true,
-    _csrf: req.csrfToken(),
   });
 }
 

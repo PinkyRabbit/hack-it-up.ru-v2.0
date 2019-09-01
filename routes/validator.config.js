@@ -1,4 +1,4 @@
-const reservedWords = [
+const reservedRoutes = [
   'login',
   'admin',
   'tag',
@@ -17,6 +17,6 @@ const articleFields = [
 ];
 
 module.exports = {
-  reservedWords,
+  reservedRoutes,
   articleFields,
 };

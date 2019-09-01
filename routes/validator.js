@@ -18,14 +18,18 @@ const articleSchema = Object
 const getSlugsSchema = slugsArray => Object
   .assign(...slugsArray.map(slug => ({ [slug]: Joi.string().regex(/^[a-z0-9-]+$/) })));
 
-const validateSlugs = (slugsArray, canBeReservedWord = false) => {
-  const slugsSchema = getSlugsSchema(slugsArray);
+const articleSlugsSchema = {
+  categorySlug: Joi.string().regex(/^[a-z0-9-]+$/).required(),
+  articleSlug: Joi.string().regex(/^[a-z0-9-]+$/).required(),
+};
 
+const categorySlugSchema = {
+  categorySlug: Joi.string().regex(/^[a-z0-9-]+$/).required(),
+};
+
+const validateSlugs = (slugsArray) => {
+  const slugsSchema = getSlugsSchema(slugsArray);
   return (req, res, next) => {
-    if (canBeReservedWord && config.reservedWords.includes(req.baseUrl)) {
-      req.session.reserved = true;
-      return next();
-    }
     const { error } = Joi.validate(req.params, slugsSchema);
 
     if (error) {
@@ -71,8 +75,20 @@ const validateArticleId = (req, res, next) => {
   return next();
 };
 
+const validateArticleSlugs = (slugs) => {
+  const { error } = Joi.validate(slugs, articleSlugsSchema);
+  return { error };
+};
+
+const validateCategorySlug = (slug) => {
+  const { error } = Joi.validate(slug, categorySlugSchema);
+  return { error };
+};
+
 module.exports = {
   validateArticleId,
   validateArticle,
   validateSlugs,
+  validateArticleSlugs,
+  validateCategorySlug,
 };

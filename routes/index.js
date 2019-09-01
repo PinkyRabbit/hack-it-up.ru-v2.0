@@ -1,8 +1,12 @@
 const createError  = require('http-errors');
 
-const publicRoutes   = require('./public');
 const adminRoutes = require('./admin');
+const publicRoutes = require('./public');
+const unstableRoutes = require('./unstable');
 const errorHandler = require('../services/errors');
+const { reservedRoutes } = require('./validator.config');
+
+const unstablePath = new RegExp(`/((?!${reservedRoutes.join('|')}).)*`);
 
 module.exports = (app) => {
   app.get('*', (req, res, next) => {
@@ -11,6 +15,7 @@ module.exports = (app) => {
   });
 
   app.use('/admin', adminRoutes);
+  app.use(unstablePath, unstableRoutes);
   app.use('/', publicRoutes);
 
   if (process.env.NODE_ENV === 'production') {

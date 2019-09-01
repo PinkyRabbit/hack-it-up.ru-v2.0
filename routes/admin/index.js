@@ -10,6 +10,14 @@ const { generator } = require('../../utils/helpers');
 const adminRouter = express.Router();
 
 adminRouter
+  .get('*', (req, res, next) => {
+    console.log('adminRouter!');
+      console.dir(req.params) // '/admin/new'
+      console.dir(req.originalUrl) // '/admin/new'
+  console.dir(req.baseUrl) // '/admin'
+  console.dir(req.path)
+    return next();
+  })
   .use('*', isAuthenticated, addSeoAdmin)
   .use('/article', adminArticleRoute)
   .use('/categories', adminCategoryRoute)

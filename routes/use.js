@@ -14,15 +14,11 @@ const article = async (req, res, next) => {
   return next();
 };
 
-const fullArticle = async (req, res, next) => {
-  if (req.session && req.session.reserved) {
-    return next();
-  }
-
+const fullArticle = async (slugs, next) => {
   const {
     articleSlug,
     categorySlug,
-  } = req.params;
+  } = slugs;
 
   const requestedArticle = await Posts.getOneBySlugWithRelations(articleSlug);
   if (
@@ -34,8 +30,7 @@ const fullArticle = async (req, res, next) => {
     return next(createError(404, 'Not found'));
   }
 
-  req.session.article = requestedArticle;
-  return next();
+  return requestedArticle;
 };
 
 module.exports = {

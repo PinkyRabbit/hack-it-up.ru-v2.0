@@ -85,42 +85,47 @@ const getNews = async ({ page = 1 }) => {
   return { news, pagination, seo };
 };
 
-const getCategoryNews = async ({ page = 1 }, slug) => {
+const getCategoryNews = async (slug, { page = 1 }) => {
   const { news, pagination } = await getBaseForNews(page, { 'category.slug': slug });
   const category = await Category.findBySlug(slug);
-
-  const seo = {
-    title: `Раздел ${category.name}`,
-    h1: category.name,
-    keywords: category.keywords || '',
-    postimage: 'standart/main.jpg',
-    description: category.description || '',
-  };
-  if (page !== 1) {
-    seo.title = `${seo.title}, страница ${page}`;
-    seo.h1 = `${seo.h1}. Cтраница ${page}`;
-    seo.description = `Cтраница ${page}. ${seo.description}`;
+  let seo;
+  if (category) {
+    seo = {
+      title: `Раздел ${category.name}`,
+      h1: category.name,
+      keywords: category.keywords || '',
+      postimage: 'standart/main.jpg',
+      description: category.description || '',
+    };
+    if (page !== 1) {
+      seo.title = `${seo.title}, страница ${page}`;
+      seo.h1 = `${seo.h1}. Cтраница ${page}`;
+      seo.description = `Cтраница ${page}. ${seo.description}`;
+    }
   }
 
   return { news, pagination, seo };
 };
 
 const getTagNews = async ({ page = 1 }, slug) => {
-  const { news, pagination } = await getBaseForNews(page, { 'tag.slug': slug });
+  const { news, pagination } = await getBaseForNews(page, { 'tags.slug': slug });
   const tag = await Tag.findBySlug(slug);
-
-  const seo = {
-    title: tag.name,
-    h1: `Про ${tag.name}.`,
-    keywords: tag.name,
-    postimage: 'standart/main.jpg',
-    description: `Это раздел про ${tag.name}.` || '',
-  };
-  if (page !== 1) {
-    seo.title = `${seo.title}, страница ${page}`;
-    seo.h1 = `${seo.h1}. Cтраница ${page}`;
-    seo.description = `${seo.description} Cтраница ${page}.`;
+  let seo;
+  if (tag) {
+    seo = {
+      title: tag.name,
+      h1: `Про ${tag.name}.`,
+      keywords: tag.name,
+      postimage: 'standart/main.jpg',
+      description: `Это раздел про ${tag.name}.` || '',
+    };
+    if (page !== 1) {
+      seo.title = `${seo.title}, страница ${page}`;
+      seo.h1 = `${seo.h1}. Cтраница ${page}`;
+      seo.description = `${seo.description} Cтраница ${page}.`;
+    }
   }
+
 
   return { news, pagination, seo };
 };
