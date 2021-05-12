@@ -41,7 +41,7 @@
     "monk": "^7.0.0",
     "multer": "^1.4.1",
     "node-base64-image": "^1.0.6",
-    "nodemailer": "^6.2.1",
+    "nodemailer": "^6.4.16",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "serve-favicon": "^2.5.0",
